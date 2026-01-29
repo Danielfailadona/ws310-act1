@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic CRUD Table</title>
+    <link rel="stylesheet" href="crud.css">
+</head>
+<body>
+
+<div class="main">
+    <h1>SSS Online Form</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Location (Nation)</th>
+                <th>Religion (Hobby)</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            </tbody>
+    </table>
+
+    <div class="footer-actions">
+        <button class="btn btn-add" onclick="window.location.href='../page1/page1.html'">Add record</button>
+    </div>
+</div>
+
+<script>
+    let userData = [];
+
+    // Load data from server
+    async function loadData() {
+        try {
+            const response = await fetch('crud.php?action=read');
+            userData = await response.json();
+            renderTable();
+        } catch (error) {
+            console.error('Error loading data:', error);
+        }
+    }
+
+    const tableBody = document.getElementById('table-body');
+
+    // Render function using forEach
+    function renderTable() {
+        // Clear existing content
+        tableBody.innerHTML = "";
+
+        // Loop through each item in the array
+        userData.forEach((user) => {
+            const row = `
+                <tr>
+                    <td class="id-col">${user.id}</td>
+                    <td>${user.first}</td>
+                    <td>${user.last}</td>
+                    <td>${user.email}</td>
+                    <td>${user.phone}</td>
+                    <td>${user.location}</td>
+                    <td>${user.hobby}</td>
+                    <td>
+                        <button class="btn btn-edit" onclick="editItem(${user.id})">Edit</button>
+                        <button class="btn btn-del" onclick="deleteItem(${user.id})">Del</button>
+                    </td>
+                </tr>
+            `;
+            tableBody.innerHTML += row;
+        });
+    }
+
+    // Redirect to page1 to add a new item (show Submit button)
+    function addItem() {
+        window.location.href = '../page1/page1.html';
+    }
+
+    // Redirect to page1.html with the user ID to edit
+    async function editItem(id) {
+        // Show alert with the ID being edited
+        // alert("Loading applicant data for ID: " + id);
+
+        // Fetch the data first to show what will be loaded
+        try {
+            const response = await fetch('crud.php?action=read_single&id=' + id);
+            const data = await response.json();
+
+            if (data) {
+                let debugMsg = "DATA TO BE LOADED:\n\n";
+
+                // Show main applicant data in the requested format
+                if (data.applicant) {
+                    debugMsg += "APPLICANT DATA:\n";
+                    debugMsg += "ssnum: " + (data.applicant.ssnum || 'N/A') + "\n";
+                    debugMsg += "lname: " + (data.applicant.lname || 'N/A') + "\n";
+                    debugMsg += "fname: " + (data.applicant.fname || 'N/A') + "\n";
+                    debugMsg += "mname: " + (data.applicant.mname || 'N/A') + "\n";
+                    debugMsg += "sfx: " + (data.applicant.sfx || 'N/A') + "\n";
+                    debugMsg += "dbirth: " + (data.applicant.dbirth || 'N/A') + "\n";
+                    debugMsg += "sex: " + (data.applicant.sex || 'N/A') + "\n";
+                    debugMsg += "cvstatus: " + (data.applicant.cvstatus || 'N/A') + "\n";
+                    debugMsg += "cvstatus_other: " + (data.applicant.cvstatus_other || 'N/A') + "\n";
+                    debugMsg += "taxid: " + (data.applicant.taxid || 'N/A') + "\n";
+                    debugMsg += "nation: " + (data.applicant.nation || 'N/A') + "\n";
+                    debugMsg += "religion: " + (data.applicant.religion || 'N/A') + "\n";
+                    debugMsg += "pbirth: " + (data.applicant.pbirth || 'N/A') + "\n";
+                    debugMsg += "cphone: " + (data.applicant.cphone || 'N/A') + "\n";
+                    debugMsg += "email: " + (data.applicant.email || 'N/A') + "\n";
+                    debugMsg += "tphone: " + (data.applicant.tphone || 'N/A') + "\n";
+                    debugMsg += "printed_name: " + (data.applicant.printed_name || 'N/A') + "\n";
+                    debugMsg += "cert_date: " + (data.applicant.cert_date || 'N/A') + "\n\n";
+                } else {
+                    debugMsg += "APPLICANT DATA: No data found\n\n";
+                }
+
+                // Show address data in the requested format
+                if (data.address) {
+                    debugMsg += "ADDRESS DATA:\n";
+                    debugMsg += "address_1: " + (data.address.address_1 || 'N/A') + "\n";
+                    debugMsg += "address_2: " + (data.address.address_2 || 'N/A') + "\n";
+                    debugMsg += "address_3: " + (data.address.address_3 || 'N/A') + "\n";
+                    debugMsg += "address_4: " + (data.address.address_4 || 'N/A') + "\n";
+                    debugMsg += "address_5: " + (data.address.address_5 || 'N/A') + "\n";
+                    debugMsg += "address_6: " + (data.address.address_6 || 'N/A') + "\n";
+                    debugMsg += "address_7: " + (data.address.address_7 || 'N/A') + "\n";
+                    debugMsg += "address_8: " + (data.address.address_8 || 'N/A') + "\n";
+                    debugMsg += "address_9: " + (data.address.address_9 || 'N/A') + "\n";
+                    debugMsg += "same_as_pbirth: " + (data.address.same_as_pbirth ? 'Yes' : 'No') + "\n\n";
+                } else {
+                    debugMsg += "ADDRESS DATA: No data found\n\n";
+                }
+
+                // Show parents data in the requested format
+                if (data.parents) {
+                    debugMsg += "PARENTS DATA:\n";
+                    debugMsg += "lfather: " + (data.parents.lfather || 'N/A') + "\n";
+                    debugMsg += "ffather: " + (data.parents.ffather || 'N/A') + "\n";
+                    debugMsg += "mfather: " + (data.parents.mfather || 'N/A') + "\n";
+                    debugMsg += "sfxfather: " + (data.parents.sfxfather || 'N/A') + "\n";
+                    debugMsg += "fbirth: " + (data.parents.fbirth || 'N/A') + "\n";
+                    debugMsg += "lmother: " + (data.parents.lmother || 'N/A') + "\n";
+                    debugMsg += "fmother: " + (data.parents.fmother || 'N/A') + "\n";
+                    debugMsg += "mmother: " + (data.parents.mmother || 'N/A') + "\n";
+                    debugMsg += "sfxmother: " + (data.parents.sfxmother || 'N/A') + "\n";
+                    debugMsg += "mbirth: " + (data.parents.mbirth || 'N/A') + "\n\n";
+                } else {
+                    debugMsg += "PARENTS DATA: No data found\n\n";
+                }
+
+                // Show spouse data in the requested format
+                if (data.spouse) {
+                    debugMsg += "SPOUSE DATA:\n";
+                    debugMsg += "lspouse: " + (data.spouse.lspouse || 'N/A') + "\n";
+                    debugMsg += "fspouse: " + (data.spouse.fspouse || 'N/A') + "\n";
+                    debugMsg += "mspouse: " + (data.spouse.mspouse || 'N/A') + "\n";
+                    debugMsg += "sfxspouse: " + (data.spouse.sfxspouse || 'N/A') + "\n";
+                    debugMsg += "sbirth: " + (data.spouse.sbirth || 'N/A') + "\n\n";
+                } else {
+                    debugMsg += "SPOUSE DATA: No data found\n\n";
+                }
+
+                // Show children data in the requested format
+                if (data.children && data.children.length > 0) {
+                    debugMsg += "CHILDREN DATA (" + data.children.length + " found):\n";
+                    data.children.forEach((child, index) => {
+                        debugMsg += "Child " + (index + 1) + ":\n";
+                        debugMsg += "  lname: " + (child.lname || 'N/A') + "\n";
+                        debugMsg += "  fname: " + (child.fname || 'N/A') + "\n";
+                        debugMsg += "  mname: " + (child.mname || 'N/A') + "\n";
+                        debugMsg += "  sfx: " + (child.sfx || 'N/A') + "\n";
+                        debugMsg += "  dbirth: " + (child.dbirth || 'N/A') + "\n\n";
+                    });
+                } else {
+                    debugMsg += "CHILDREN DATA: No data found\n\n";
+                }
+
+                // Show employment data in the requested format
+                if (data.employment) {
+                    debugMsg += "EMPLOYMENT DATA:\n";
+                    debugMsg += "employment_type: " + (data.employment.employment_type || 'N/A') + "\n";
+                    debugMsg += "profession: " + (data.employment.profession || 'N/A') + "\n";
+                    debugMsg += "ystart: " + (data.employment.ystart || 'N/A') + "\n";
+                    debugMsg += "mearning: " + (data.employment.mearning || 'N/A') + "\n";
+                    debugMsg += "faddress: " + (data.employment.faddress || 'N/A') + "\n";
+                    debugMsg += "ofw_monthly_earnings: " + (data.employment.ofw_monthly_earnings || 'N/A') + "\n";
+                    debugMsg += "spouse_ssnum: " + (data.employment.spouse_ssnum || 'N/A') + "\n";
+                    debugMsg += "ffprogram: " + (data.employment.ffprogram || 'N/A') + "\n";
+                    debugMsg += "ffp: " + (data.employment.ffp || 'N/A') + "\n\n";
+                } else {
+                    debugMsg += "EMPLOYMENT DATA: No data found\n\n";
+                }
+
+                debugMsg += "Data retrieval completed successfully!";
+                // alert(debugMsg);
+            } else {
+                // alert("No data found for ID: " + id);
+            }
+        } catch (error) {
+            console.error('Error loading applicant data:', error);
+            // alert("Error loading applicant data for ID: " + id);
+        }
+
+        // Redirect to page1.html with the applicant ID as a query parameter
+        window.location.href = '../page1/page1.html?edit=' + id;
+    }
+
+    // Delete item
+    async function deleteItem(id) {
+        if (confirm("Are you sure you want to delete ID: " + id + "?")) {
+            try {
+                const response = await fetch('crud.php?action=delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'id=' + encodeURIComponent(id)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Remove the deleted row from the table immediately
+                    const rows = tableBody.querySelectorAll('tr');
+                    rows.forEach(r => {
+                        const idCell = r.querySelector('.id-col');
+                        if (idCell && idCell.textContent.trim() == String(id)) {
+                            r.remove();
+                        }
+                    });
+                    // Also reload data to keep client in sync
+                    loadData(); // Reload data
+                } else {
+                    // alert("Error: " + result.message);
+                }
+            } catch (error) {
+                console.error('Error deleting item:', error);
+                // alert("Error deleting record");
+            }
+        }
+    }
+
+    // Initial call to display the data
+    loadData();
+</script>
+
+</body>
+</html>
