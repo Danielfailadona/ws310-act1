@@ -1,39 +1,40 @@
 <?php
-// Database connection
-function connectDB() {
-    $host = 'localhost';
-    $dbname = 'ws310_db';
-    $username = 'root';
-    $password = '';
+// Include the UniversalCRUD class
+require_once '../universal-crud/UniversalCRUD.php';
 
-    try {
-        $conn = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        return $conn;
-    } catch(PDOException $e) {
-        die("Connection failed: " . $e->getMessage());
-    }
-}
-
-// Validation functions
+// Validation function
 function validateRequired($value) {
     return !empty(trim($value));
-}
-
-function validateEmail($email) {
-    return filter_var($email, FILTER_VALIDATE_EMAIL);
-}
-
-function validatePhone($phone) {
-    return preg_match('/^(09|\+639)\d{9}$/', preg_replace('/\D/', '', $phone));
 }
 
 // Determine action based on the action parameter
 $action = $_GET['action'] ?? 'insert';
 
 // Process form submission
-if ($_SERVER["REQUEST_METHOD"] == "POST" && $action === 'update') {
-    // Handle update operation
+switch($action) {
+    case 'update':
+        handleUpdate();
+        break;
+
+    case 'insert':
+        handleInsert();
+        break;
+
+    default:
+        // Handle invalid action
+        echo json_encode(['success' => false, 'message' => 'Invalid action']);
+        break;
+}
+
+//==============================
+
+// UPDATE OPERATION
+function handleUpdate() {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+        exit;
+    }
+
     $errors = [];
 
     // Get applicant ID from the form
@@ -45,34 +46,329 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $action === 'update') {
 
     if (empty($errors)) {
         try {
-            $conn = connectDB();
-            $conn->beginTransaction();
+            // Create CRUD instances for different tables
+            $applicantCrud = new UniversalCRUD('applicants');
+            $addressCrud = new UniversalCRUD('applicant_addresses');
+            $parentsCrud = new UniversalCRUD('applicant_parents');
+            $spouseCrud = new UniversalCRUD('applicant_spouse');
+            $employmentCrud = new UniversalCRUD('applicant_employment');
+
+            // Prepare applicant data
+            $applicantData = [
+                'ssnum' => trim($_POST['ssnum'] ?? ''),
+                'lname' => trim($_POST['lname'] ?? ''),
+                'fname' => trim($_POST['fname'] ?? ''),
+                'mname' => trim($_POST['mname'] ?? ''),
+                'sfx' => trim($_POST['sfx'] ?? ''),
+                'dbirth' => !empty($_POST['dbirth']) ? date('Y-m-d', strtotime($_POST['dbirth'])) : null,
+                'sex' => trim($_POST['sex'] ?? ''),
+                'cvstatus' => trim($_POST['cvstatus'] ?? ''),
+                'cvstatus_other' => trim($_POST['cvstatus_other'] ?? ''),
+                'taxid' => trim($_POST['taxid'] ?? ''),
+                'nation' => trim($_POST['nation'] ?? ''),
+                'religion' => trim($_POST['religion'] ?? ''),
+                'pbirth' => trim($_POST['pbirth'] ?? ''),
+                'cphone' => trim($_POST['cphone'] ?? ''),
+                'email' => trim($_POST['email'] ?? ''),
+                'tphone' => trim($_POST['tphone'] ?? ''),
+                'printed_name' => trim($_POST['printed-name'] ?? ''),
+                'cert_date' => !empty($_POST['cert-date']) ? date('Y-m-d', strtotime($_POST['cert-date'])) : null
+            ];
 
             // Update applicant data
-            $updateSql = "UPDATE applicants SET
-                ssnum = :ssnum,
-                lname = :lname,
-                fname = :fname,
-                mname = :mname,
-                sfx = :sfx,
-                dbirth = :dbirth,
-                sex = :sex,
-                cvstatus = :cvstatus,
-                cvstatus_other = :cvstatus_other,
-                taxid = :taxid,
-                nation = :nation,
-                religion = :religion,
-                pbirth = :pbirth,
-                cphone = :cphone,
-                email = :email,
-                tphone = :tphone,
-                printed_name = :printed_name,
-                cert_date = :cert_date
-            WHERE applicant_id = :applicant_id";
+            $applicantSuccess = $applicantCrud->update($applicantData, ['applicant_id' => $applicantId]);
 
-            $updateStmt = $conn->prepare($updateSql);
+            // Prepare address data
+            $addressData = [
+                'address_1' => trim($_POST['address-1'] ?? ''),
+                'address_2' => trim($_POST['address-2'] ?? ''),
+                'address_3' => trim($_POST['address-3'] ?? ''),
+                'address_4' => trim($_POST['address-4'] ?? ''),
+                'address_5' => trim($_POST['address-5'] ?? ''),
+                'address_6' => trim($_POST['address-6'] ?? ''),
+                'address_7' => trim($_POST['address-7'] ?? ''),
+                'address_8' => trim($_POST['address-8'] ?? ''),
+                'address_9' => trim($_POST['address-9'] ?? ''),
+                'same_as_pbirth' => isset($_POST['same_as_pbirth']) ? 1 : 0
+            ];
 
-            // Prepare variables for binding to avoid "passed by reference" error
+            // Update address data
+            $addressSuccess = $addressCrud->update($addressData, ['applicant_id' => $applicantId]);
+
+            // Prepare parents data
+            $parentsData = [
+                'lfather' => trim($_POST['lfather'] ?? ''),
+                'ffather' => trim($_POST['ffather'] ?? ''),
+                'mfather' => trim($_POST['mfather'] ?? ''),
+                'sfxfather' => trim($_POST['sfxfather'] ?? ''),
+                'fbirth' => !empty($_POST['fbirth']) ? date('Y-m-d', strtotime($_POST['fbirth'])) : null,
+                'lmother' => trim($_POST['lmother'] ?? ''),
+                'fmother' => trim($_POST['fmother'] ?? ''),
+                'mmother' => trim($_POST['mmother'] ?? ''),
+                'sfxmother' => trim($_POST['sfxmother'] ?? ''),
+                'mbirth' => !empty($_POST['mbirth']) ? date('Y-m-d', strtotime($_POST['mbirth'])) : null
+            ];
+
+            // Update parents data
+            $parentsSuccess = $parentsCrud->update($parentsData, ['applicant_id' => $applicantId]);
+
+            // Prepare spouse data if provided
+            $spouseSuccess = true; // Assume success if no spouse data
+            if (!empty(trim($_POST['lspouse'] ?? '')) || !empty(trim($_POST['fspouse'] ?? ''))) {
+                $spouseData = [
+                    'lspouse' => trim($_POST['lspouse'] ?? ''),
+                    'fspouse' => trim($_POST['fspouse'] ?? ''),
+                    'mspouse' => trim($_POST['mspouse'] ?? ''),
+                    'sfxspouse' => trim($_POST['sfxspouse'] ?? ''),
+                    'sbirth' => !empty($_POST['sbirth']) ? date('Y-m-d', strtotime($_POST['sbirth'])) : null
+                ];
+                $spouseSuccess = $spouseCrud->update($spouseData, ['applicant_id' => $applicantId]);
+            }
+
+            // Prepare employment data
+            $employmentSuccess = true; // Assume success if no employment data
+            $employmentType = '';
+            if (!empty(trim($_POST['profession'] ?? ''))) $employmentType = 'Self-Employed';
+            elseif (!empty(trim($_POST['faddress'] ?? ''))) $employmentType = 'OFW';
+            elseif (!empty(trim($_POST['spouse-ssnum'] ?? ''))) $employmentType = 'Non-Working Spouse';
+
+            if (!empty($employmentType)) {
+                $employmentData = [
+                    'employment_type' => $employmentType,
+                    'profession' => trim($_POST['profession'] ?? ''),
+                    'ystart' => trim($_POST['ystart'] ?? ''),
+                    'mearning' => trim($_POST['mearning'] ?? ''),
+                    'faddress' => trim($_POST['faddress'] ?? ''),
+                    'ofw_monthly_earnings' => trim($_POST['ofw_monthly_earnings'] ?? ''),
+                    'spouse_ssnum' => trim($_POST['spouse-ssnum'] ?? ''),
+                    'ffprogram' => trim($_POST['ffprogram'] ?? ''),
+                    'ffp' => trim($_POST['ffp'] ?? '')
+                ];
+                $employmentSuccess = $employmentCrud->update($employmentData, ['applicant_id' => $applicantId]);
+            }
+
+            // Check if all operations were successful
+            if ($applicantSuccess && $addressSuccess && $parentsSuccess && $spouseSuccess && $employmentSuccess) {
+                echo json_encode(['success' => true, 'message' => 'Record updated successfully']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Failed to update record']);
+            }
+            exit();
+
+        } catch(Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
+            exit();
+        }
+    } else {
+        echo json_encode(['success' => false, 'message' => implode(', ', $errors)]);
+        exit();
+    }
+}
+
+//==============================
+
+// INSERT OPERATION
+function handleInsert() {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        echo "<script>alert('Invalid request method'); window.history.back();</script>";
+        exit;
+    }
+
+    $errors = [];
+
+    // Validate required fields
+    $ssnum = trim($_POST['ssnum'] ?? '');
+    if (!validateRequired($ssnum)) {
+        $errors[] = "SS Number is required";
+    }
+
+    $lname = trim($_POST['lname'] ?? '');
+    if (!validateRequired($lname)) {
+        $errors[] = "Last Name is required";
+    }
+
+    $fname = trim($_POST['fname'] ?? '');
+    if (!validateRequired($fname)) {
+        $errors[] = "First Name is required";
+    }
+
+    $dbirth = trim($_POST['dbirth'] ?? '');
+    if (!validateRequired($dbirth)) {
+        $errors[] = "Date of Birth is required";
+    } elseif (!empty($dbirth) && strtotime($dbirth) >= time()) {
+        $errors[] = "Date of Birth must be in the past";
+    }
+
+    if (!validateRequired($_POST['sex'] ?? '')) $errors[] = "Sex is required";
+    if (!validateRequired($_POST['cvstatus'] ?? '')) $errors[] = "Civil Status is required";
+    if (!validateRequired($_POST['nation'] ?? '')) $errors[] = "Nationality is required";
+    if (!validateRequired($_POST['pbirth'] ?? '')) $errors[] = "Place of Birth is required";
+    if (!validateRequired($_POST['address_6'] ?? '')) $errors[] = "Address (City) is required";
+    if (!validateRequired($_POST['address_7'] ?? '')) $errors[] = "Address (Province) is required";
+    if (!validateRequired($_POST['cphone'] ?? '')) $errors[] = "Mobile Number is required";
+
+    $email = trim($_POST['email'] ?? '');
+    if (!validateRequired($email)) {
+        $errors[] = "Email is required";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = "Invalid email format";
+    }
+
+    $cphone = trim($_POST['cphone'] ?? '');
+    if (!empty($cphone) && !preg_match('/^[0-9+\-\s()]+$/', preg_replace('/\D/', '', $cphone))) {
+        $errors[] = "Invalid phone number format";
+    }
+
+    // If no errors, process the data
+    if (empty($errors)) {
+        try {
+            // Create CRUD instances for different tables
+            $applicantCrud = new UniversalCRUD('applicants');
+            $addressCrud = new UniversalCRUD('applicant_addresses');
+            $parentsCrud = new UniversalCRUD('applicant_parents');
+            $spouseCrud = new UniversalCRUD('applicant_spouse');
+            $childrenCrud = new UniversalCRUD('applicant_children');
+            $employmentCrud = new UniversalCRUD('applicant_employment');
+
+            // Prepare applicant data
+            $applicantData = [
+                'ssnum' => $ssnum,
+                'lname' => $lname,
+                'fname' => $fname,
+                'mname' => trim($_POST['mname'] ?? ''),
+                'sfx' => trim($_POST['sfx'] ?? ''),
+                'dbirth' => date('Y-m-d', strtotime($dbirth)),  // Format date for DATE type
+                'sex' => trim($_POST['sex'] ?? ''),
+                'cvstatus' => trim($_POST['cvstatus'] ?? ''),
+                'cvstatus_other' => trim($_POST['cvstatus_other'] ?? ''),
+                'taxid' => trim($_POST['taxid'] ?? ''),
+                'nation' => trim($_POST['nation'] ?? ''),
+                'religion' => trim($_POST['religion'] ?? ''),
+                'pbirth' => trim($_POST['pbirth'] ?? ''),
+                'cphone' => $cphone,
+                'email' => $email,
+                'tphone' => trim($_POST['tphone'] ?? ''),
+                'printed_name' => trim($_POST['printed-name'] ?? ''),
+                'cert_date' => !empty($_POST['cert-date']) ? date('Y-m-d', strtotime($_POST['cert-date'])) : null
+            ];
+
+            // Insert applicant data
+            $applicantId = $applicantCrud->create($applicantData);
+
+            if ($applicantId) {
+                // Prepare address data
+                $addressData = [
+                    'applicant_id' => $applicantId,
+                    'address_1' => trim($_POST['address-1'] ?? ''),
+                    'address_2' => trim($_POST['address-2'] ?? ''),
+                    'address_3' => trim($_POST['address-3'] ?? ''),
+                    'address_4' => trim($_POST['address-4'] ?? ''),
+                    'address_5' => trim($_POST['address-5'] ?? ''),
+                    'address_6' => trim($_POST['address-6'] ?? ''),
+                    'address_7' => trim($_POST['address-7'] ?? ''),
+                    'address_8' => trim($_POST['address-8'] ?? ''),
+                    'address_9' => trim($_POST['address-9'] ?? ''),
+                    'same_as_pbirth' => isset($_POST['same_as_pbirth']) ? 1 : 0
+                ];
+
+                // Insert address data
+                $addressId = $addressCrud->create($addressData);
+
+                // Prepare parents data
+                $parentsData = [
+                    'applicant_id' => $applicantId,
+                    'lfather' => trim($_POST['lfather'] ?? ''),
+                    'ffather' => trim($_POST['ffather'] ?? ''),
+                    'mfather' => trim($_POST['mfather'] ?? ''),
+                    'sfxfather' => trim($_POST['sfxfather'] ?? ''),
+                    'fbirth' => !empty($_POST['fbirth']) ? date('Y-m-d', strtotime($_POST['fbirth'])) : null,
+                    'lmother' => trim($_POST['lmother'] ?? ''),
+                    'fmother' => trim($_POST['fmother'] ?? ''),
+                    'mmother' => trim($_POST['mmother'] ?? ''),
+                    'sfxmother' => trim($_POST['sfxmother'] ?? ''),
+                    'mbirth' => !empty($_POST['mbirth']) ? date('Y-m-d', strtotime($_POST['mbirth'])) : null
+                ];
+
+                // Insert parents data
+                $parentsId = $parentsCrud->create($parentsData);
+
+                // Insert spouse data if provided
+                if (!empty(trim($_POST['lspouse'] ?? '')) || !empty(trim($_POST['fspouse'] ?? ''))) {
+                    $spouseData = [
+                        'applicant_id' => $applicantId,
+                        'lspouse' => trim($_POST['lspouse'] ?? ''),
+                        'fspouse' => trim($_POST['fspouse'] ?? ''),
+                        'mspouse' => trim($_POST['mspouse'] ?? ''),
+                        'sfxspouse' => trim($_POST['sfxspouse'] ?? ''),
+                        'sbirth' => !empty($_POST['sbirth']) ? date('Y-m-d', strtotime($_POST['sbirth'])) : null
+                    ];
+                    $spouseId = $spouseCrud->create($spouseData);
+                }
+
+                // Insert children data
+                if (isset($_POST['children']) && is_array($_POST['children'])) {
+                    foreach ($_POST['children'] as $child) {
+                        if (!empty($child['lname']) || !empty($child['fname'])) {
+                            $childData = [
+                                'applicant_id' => $applicantId,
+                                'lname' => trim($child['lname'] ?? ''),
+                                'fname' => trim($child['fname'] ?? ''),
+                                'mname' => trim($child['mname'] ?? ''),
+                                'sfx' => trim($child['sfx'] ?? ''),
+                                'dbirth' => !empty($child['dbirth']) ? date('Y-m-d', strtotime($child['dbirth'])) : null
+                            ];
+                            $childrenCrud->create($childData);
+                        }
+                    }
+                }
+
+                // Insert employment data
+                $employmentType = '';
+                if (!empty(trim($_POST['profession'] ?? ''))) $employmentType = 'Self-Employed';
+                elseif (!empty(trim($_POST['faddress'] ?? ''))) $employmentType = 'OFW';
+                elseif (!empty(trim($_POST['spouse-ssnum'] ?? ''))) $employmentType = 'Non-Working Spouse';
+
+                if (!empty($employmentType)) {
+                    $employmentData = [
+                        'applicant_id' => $applicantId,
+                        'employment_type' => $employmentType,
+                        'profession' => trim($_POST['profession'] ?? ''),
+                        'ystart' => trim($_POST['ystart'] ?? ''),
+                        'mearning' => trim($_POST['mearning'] ?? ''),
+                        'faddress' => trim($_POST['faddress'] ?? ''),
+                        'ofw_monthly_earnings' => trim($_POST['ofw_monthly_earnings'] ?? ''),
+                        'spouse_ssnum' => trim($_POST['spouse-ssnum'] ?? ''),
+                        'ffprogram' => trim($_POST['ffprogram'] ?? ''),
+                        'ffp' => trim($_POST['ffp'] ?? '')
+                    ];
+                    $employmentId = $employmentCrud->create($employmentData);
+                }
+
+                echo "<script>sessionStorage.setItem('formSuccess', 'true'); window.location.href='page1.html';</script>";
+                exit();
+
+            } else {
+                echo "<script>alert('Failed to create applicant record'); window.history.back();</script>";
+                exit();
+            }
+
+        } catch(Exception $e) {
+            echo "<script>alert('Database error: " . $e->getMessage() . "'); window.history.back();</script>";
+            exit();
+        }
+    } else {
+        $errorMsg = implode("\\n", $errors);
+        echo "<script>alert('$errorMsg'); window.history.back();</script>";
+        exit();
+    }
+}
+
+//==============================
+?>
+
+            $updateStmt = mysqli_prepare($conn, $updateSql);
+
+            // Prepare variables for binding
             $ssnum = trim($_POST['ssnum'] ?? '');
             $lname = trim($_POST['lname'] ?? '');
             $fname = trim($_POST['fname'] ?? '');
@@ -98,43 +394,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $action === 'update') {
             $cert_date = !empty($_POST['cert-date']) ? date('Y-m-d', strtotime($_POST['cert-date'])) : null;
 
             // Bind parameters
-            $updateStmt->bindParam(':applicant_id', $applicantId);
-            $updateStmt->bindParam(':ssnum', $ssnum);
-            $updateStmt->bindParam(':lname', $lname);
-            $updateStmt->bindParam(':fname', $fname);
-            $updateStmt->bindParam(':mname', $mname);
-            $updateStmt->bindParam(':sfx', $sfx);
-            $updateStmt->bindParam(':dbirth', $dbirth);
-            $updateStmt->bindParam(':sex', $sex);
-            $updateStmt->bindParam(':cvstatus', $cvstatus);
-            $updateStmt->bindParam(':cvstatus_other', $cvstatus_other);
-            $updateStmt->bindParam(':taxid', $taxid);
-            $updateStmt->bindParam(':nation', $nation);
-            $updateStmt->bindParam(':religion', $religion);
-            $updateStmt->bindParam(':pbirth', $pbirth);
-            $updateStmt->bindParam(':cphone', $cphone);
-            $updateStmt->bindParam(':email', $email);
-            $updateStmt->bindParam(':tphone', $tphone);
-            $updateStmt->bindParam(':printed_name', $printed_name);
-            $updateStmt->bindParam(':cert_date', $cert_date);
+            mysqli_stmt_bind_param($updateStmt, "ssssssssssssssssssi", 
+                $ssnum, $lname, $fname, $mname, $sfx, $dbirth, $sex, $cvstatus, $cvstatus_other,
+                $taxid, $nation, $religion, $pbirth, $cphone, $email, $tphone, $printed_name, $cert_date, $applicantId);
 
-            $updateStmt->execute();
+            mysqli_stmt_execute($updateStmt);
 
             // Update address data
             $addressUpdateSql = "UPDATE applicant_addresses SET
-                address_1 = :address_1,
-                address_2 = :address_2,
-                address_3 = :address_3,
-                address_4 = :address_4,
-                address_5 = :address_5,
-                address_6 = :address_6,
-                address_7 = :address_7,
-                address_8 = :address_8,
-                address_9 = :address_9,
-                same_as_pbirth = :same_as_pbirth
-            WHERE applicant_id = :applicant_id";
+                address_1 = ?, address_2 = ?, address_3 = ?, address_4 = ?, address_5 = ?,
+                address_6 = ?, address_7 = ?, address_8 = ?, address_9 = ?, same_as_pbirth = ?
+            WHERE applicant_id = ?";
 
-            $addressUpdateStmt = $conn->prepare($addressUpdateSql);
+            $addressUpdateStmt = mysqli_prepare($conn, $addressUpdateSql);
 
             // Prepare address variables
             $address_1 = trim($_POST['address-1'] ?? '');
@@ -148,35 +420,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $action === 'update') {
             $address_9 = trim($_POST['address-9'] ?? '');
             $same_as_pbirth = isset($_POST['same_as_pbirth']) ? 1 : 0;
 
-            $addressUpdateStmt->bindParam(':applicant_id', $applicantId);
-            $addressUpdateStmt->bindParam(':address_1', $address_1);
-            $addressUpdateStmt->bindParam(':address_2', $address_2);
-            $addressUpdateStmt->bindParam(':address_3', $address_3);
-            $addressUpdateStmt->bindParam(':address_4', $address_4);
-            $addressUpdateStmt->bindParam(':address_5', $address_5);
-            $addressUpdateStmt->bindParam(':address_6', $address_6);
-            $addressUpdateStmt->bindParam(':address_7', $address_7);
-            $addressUpdateStmt->bindParam(':address_8', $address_8);
-            $addressUpdateStmt->bindParam(':address_9', $address_9);
-            $addressUpdateStmt->bindParam(':same_as_pbirth', $same_as_pbirth);
+            mysqli_stmt_bind_param($addressUpdateStmt, "sssssssssi", 
+                $address_1, $address_2, $address_3, $address_4, $address_5,
+                $address_6, $address_7, $address_8, $address_9, $same_as_pbirth, $applicantId);
 
-            $addressUpdateStmt->execute();
+            mysqli_stmt_execute($addressUpdateStmt);
 
             // Update parents data
             $parentsUpdateSql = "UPDATE applicant_parents SET
-                lfather = :lfather,
-                ffather = :ffather,
-                mfather = :mfather,
-                sfxfather = :sfxfather,
-                fbirth = :fbirth,
-                lmother = :lmother,
-                fmother = :fmother,
-                mmother = :mmother,
-                sfxmother = :sfxmother,
-                mbirth = :mbirth
-            WHERE applicant_id = :applicant_id";
+                lfather = ?, ffather = ?, mfather = ?, sfxfather = ?, fbirth = ?,
+                lmother = ?, fmother = ?, mmother = ?, sfxmother = ?, mbirth = ?
+            WHERE applicant_id = ?";
 
-            $parentsUpdateStmt = $conn->prepare($parentsUpdateSql);
+            $parentsUpdateStmt = mysqli_prepare($conn, $parentsUpdateSql);
 
             // Prepare parents variables
             $lfather = trim($_POST['lfather'] ?? '');
@@ -195,31 +451,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $action === 'update') {
             // Format date fields to ensure they're in YYYY-MM-DD format for DATE type
             $mbirth = !empty($_POST['mbirth']) ? date('Y-m-d', strtotime($_POST['mbirth'])) : null;
 
-            $parentsUpdateStmt->bindParam(':applicant_id', $applicantId);
-            $parentsUpdateStmt->bindParam(':lfather', $lfather);
-            $parentsUpdateStmt->bindParam(':ffather', $ffather);
-            $parentsUpdateStmt->bindParam(':mfather', $mfather);
-            $parentsUpdateStmt->bindParam(':sfxfather', $sfxfather);
-            $parentsUpdateStmt->bindParam(':fbirth', $fbirth);
-            $parentsUpdateStmt->bindParam(':lmother', $lmother);
-            $parentsUpdateStmt->bindParam(':fmother', $fmother);
-            $parentsUpdateStmt->bindParam(':mmother', $mmother);
-            $parentsUpdateStmt->bindParam(':sfxmother', $sfxmother);
-            $parentsUpdateStmt->bindParam(':mbirth', $mbirth);
+            mysqli_stmt_bind_param($parentsUpdateStmt, "sssssssssi", 
+                $lfather, $ffather, $mfather, $sfxfather, $fbirth,
+                $lmother, $fmother, $mmother, $sfxmother, $mbirth, $applicantId);
 
-            $parentsUpdateStmt->execute();
+            mysqli_stmt_execute($parentsUpdateStmt);
 
             // Update spouse data if provided
             if (!empty(trim($_POST['lspouse'] ?? '')) || !empty(trim($_POST['fspouse'] ?? ''))) {
                 $spouseUpdateSql = "UPDATE applicant_spouse SET
-                    lspouse = :lspouse,
-                    fspouse = :fspouse,
-                    mspouse = :mspouse,
-                    sfxspouse = :sfxspouse,
-                    sbirth = :sbirth
-                WHERE applicant_id = :applicant_id";
+                    lspouse = ?, fspouse = ?, mspouse = ?, sfxspouse = ?, sbirth = ?
+                WHERE applicant_id = ?";
 
-                $spouseUpdateStmt = $conn->prepare($spouseUpdateSql);
+                $spouseUpdateStmt = mysqli_prepare($conn, $spouseUpdateSql);
 
                 // Prepare spouse variables
                 $lspouse = trim($_POST['lspouse'] ?? '');
@@ -230,14 +474,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $action === 'update') {
                 // Format date fields to ensure they're in YYYY-MM-DD format for DATE type
                 $sbirth = !empty($_POST['sbirth']) ? date('Y-m-d', strtotime($_POST['sbirth'])) : null;
 
-                $spouseUpdateStmt->bindParam(':applicant_id', $applicantId);
-                $spouseUpdateStmt->bindParam(':lspouse', $lspouse);
-                $spouseUpdateStmt->bindParam(':fspouse', $fspouse);
-                $spouseUpdateStmt->bindParam(':mspouse', $mspouse);
-                $spouseUpdateStmt->bindParam(':sfxspouse', $sfxspouse);
-                $spouseUpdateStmt->bindParam(':sbirth', $sbirth);
+                mysqli_stmt_bind_param($spouseUpdateStmt, "sssssi", 
+                    $lspouse, $fspouse, $mspouse, $sfxspouse, $sbirth, $applicantId);
 
-                $spouseUpdateStmt->execute();
+                mysqli_stmt_execute($spouseUpdateStmt);
             }
 
             // Update employment data
@@ -248,18 +488,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $action === 'update') {
 
             if (!empty($employmentType)) {
                 $employmentUpdateSql = "UPDATE applicant_employment SET
-                    employment_type = :employment_type,
-                    profession = :profession,
-                    ystart = :ystart,
-                    mearning = :mearning,
-                    faddress = :faddress,
-                    ofw_monthly_earnings = :ofw_monthly_earnings,
-                    spouse_ssnum = :spouse_ssnum,
-                    ffprogram = :ffprogram,
-                    ffp = :ffp
-                WHERE applicant_id = :applicant_id";
+                    employment_type = ?, profession = ?, ystart = ?, mearning = ?, faddress = ?,
+                    ofw_monthly_earnings = ?, spouse_ssnum = ?, ffprogram = ?, ffp = ?
+                WHERE applicant_id = ?";
 
-                $employmentUpdateStmt = $conn->prepare($employmentUpdateSql);
+                $employmentUpdateStmt = mysqli_prepare($conn, $employmentUpdateSql);
 
                 // Prepare employment variables
                 $profession = trim($_POST['profession'] ?? '');
@@ -271,26 +504,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $action === 'update') {
                 $ffprogram = trim($_POST['ffprogram'] ?? '');
                 $ffp = trim($_POST['ffp'] ?? '');
 
-                $employmentUpdateStmt->bindParam(':applicant_id', $applicantId);
-                $employmentUpdateStmt->bindParam(':employment_type', $employmentType);
-                $employmentUpdateStmt->bindParam(':profession', $profession);
-                $employmentUpdateStmt->bindParam(':ystart', $ystart);
-                $employmentUpdateStmt->bindParam(':mearning', $mearning);
-                $employmentUpdateStmt->bindParam(':faddress', $faddress);
-                $employmentUpdateStmt->bindParam(':ofw_monthly_earnings', $ofw_monthly_earnings);
-                $employmentUpdateStmt->bindParam(':spouse_ssnum', $spouse_ssnum);
-                $employmentUpdateStmt->bindParam(':ffprogram', $ffprogram);
-                $employmentUpdateStmt->bindParam(':ffp', $ffp);
+                mysqli_stmt_bind_param($employmentUpdateStmt, "sssssssssi", 
+                    $employmentType, $profession, $ystart, $mearning, $faddress,
+                    $ofw_monthly_earnings, $spouse_ssnum, $ffprogram, $ffp, $applicantId);
 
-                $employmentUpdateStmt->execute();
+                mysqli_stmt_execute($employmentUpdateStmt);
             }
 
-            $conn->commit();
+            mysqli_commit($conn);
             echo json_encode(['success' => true, 'message' => 'Record updated successfully']);
             exit();
 
-        } catch(PDOException $e) {
-            $conn->rollBack();
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            mysqli_rollback($conn);
             echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
             exit();
         }
@@ -347,24 +574,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $action === 'update') {
 
     // If no errors, process the data
     if (empty($errors)) {
+        mysqli_begin_transaction($conn);
         try {
-            $conn = connectDB();
-            $conn->beginTransaction();
-
             // Insert applicant data
             $applicantSql = "INSERT INTO applicants (
                 ssnum, lname, fname, mname, sfx, dbirth, sex, cvstatus, cvstatus_other,
                 taxid, nation, religion, pbirth, cphone, email, tphone,
                 printed_name, cert_date
-            ) VALUES (
-                :ssnum, :lname, :fname, :mname, :sfx, :dbirth, :sex, :cvstatus, :cvstatus_other,
-                :taxid, :nation, :religion, :pbirth, :cphone, :email, :tphone,
-                :printed_name, :cert_date
-            )";
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-            $applicantStmt = $conn->prepare($applicantSql);
+            $applicantStmt = mysqli_prepare($conn, $applicantSql);
 
-            // Prepare variables for binding to avoid "passed by reference" error
+            // Prepare variables for binding
             $mname = trim($_POST['mname'] ?? '');
             $sfx = trim($_POST['sfx'] ?? '');
             $sex = trim($_POST['sex'] ?? '');
@@ -384,40 +605,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $action === 'update') {
             $formattedCertDate = !empty($_POST['cert-date']) ? date('Y-m-d', strtotime($_POST['cert-date'])) : null;
 
             // Bind parameters for applicant
-            $applicantStmt->bindParam(':ssnum', $ssnum);
-            $applicantStmt->bindParam(':lname', $lname);
-            $applicantStmt->bindParam(':fname', $fname);
-            $applicantStmt->bindParam(':mname', $mname);
-            $applicantStmt->bindParam(':sfx', $sfx);
-            $applicantStmt->bindParam(':dbirth', $formattedDbirth);
-            $applicantStmt->bindParam(':sex', $sex);
-            $applicantStmt->bindParam(':cvstatus', $cvstatus);
-            $applicantStmt->bindParam(':cvstatus_other', $cvstatus_other);
-            $applicantStmt->bindParam(':taxid', $taxid);
-            $applicantStmt->bindParam(':nation', $nation);
-            $applicantStmt->bindParam(':religion', $religion);
-            $applicantStmt->bindParam(':pbirth', $pbirth);
-            $applicantStmt->bindParam(':cphone', $cphone);
-            $applicantStmt->bindParam(':email', $email);
-            $applicantStmt->bindParam(':tphone', $tphone);
-            $applicantStmt->bindParam(':printed_name', $printed_name);
-            $applicantStmt->bindParam(':cert_date', $formattedCertDate);
+            mysqli_stmt_bind_param($applicantStmt, "ssssssssssssssssss",
+                $ssnum, $lname, $fname, $mname, $sfx, $formattedDbirth, $sex, $cvstatus, $cvstatus_other,
+                $taxid, $nation, $religion, $pbirth, $cphone, $email, $tphone,
+                $printed_name, $formattedCertDate);
 
-            $applicantStmt->execute();
-            $applicantId = $conn->lastInsertId();
+            mysqli_stmt_execute($applicantStmt);
+            $applicantId = mysqli_insert_id($conn);
 
             // Insert address data
             $addressSql = "INSERT INTO applicant_addresses (
                 applicant_id, address_1, address_2, address_3, address_4, address_5,
                 address_6, address_7, address_8, address_9, same_as_pbirth
-            ) VALUES (
-                :applicant_id, :address_1, :address_2, :address_3, :address_4, :address_5,
-                :address_6, :address_7, :address_8, :address_9, :same_as_pbirth
-            )";
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-            $addressStmt = $conn->prepare($addressSql);
+            $addressStmt = mysqli_prepare($conn, $addressSql);
 
-            // Prepare variables for binding to avoid "passed by reference" error
+            // Prepare variables for binding
             $address_1 = trim($_POST['address-1'] ?? '');
             $address_2 = trim($_POST['address-2'] ?? '');
             $address_3 = trim($_POST['address-3'] ?? '');
@@ -429,31 +633,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $action === 'update') {
             $address_9 = trim($_POST['address-9'] ?? '');
             $same_as_pbirth = isset($_POST['same_as_pbirth']) ? 1 : 0;
 
-            $addressStmt->bindParam(':applicant_id', $applicantId);
-            $addressStmt->bindParam(':address_1', $address_1);
-            $addressStmt->bindParam(':address_2', $address_2);
-            $addressStmt->bindParam(':address_3', $address_3);
-            $addressStmt->bindParam(':address_4', $address_4);
-            $addressStmt->bindParam(':address_5', $address_5);
-            $addressStmt->bindParam(':address_6', $address_6);
-            $addressStmt->bindParam(':address_7', $address_7);
-            $addressStmt->bindParam(':address_8', $address_8);
-            $addressStmt->bindParam(':address_9', $address_9);
-            $addressStmt->bindParam(':same_as_pbirth', $same_as_pbirth);
-            $addressStmt->execute();
+            mysqli_stmt_bind_param($addressStmt, "isssssssssi",
+                $applicantId, $address_1, $address_2, $address_3, $address_4, $address_5,
+                $address_6, $address_7, $address_8, $address_9, $same_as_pbirth);
+            
+            mysqli_stmt_execute($addressStmt);
 
             // Insert parents data
             $parentsSql = "INSERT INTO applicant_parents (
                 applicant_id, lfather, ffather, mfather, sfxfather, fbirth,
                 lmother, fmother, mmother, sfxmother, mbirth
-            ) VALUES (
-                :applicant_id, :lfather, :ffather, :mfather, :sfxfather, :fbirth,
-                :lmother, :fmother, :mmother, :sfxmother, :mbirth
-            )";
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-            $parentsStmt = $conn->prepare($parentsSql);
+            $parentsStmt = mysqli_prepare($conn, $parentsSql);
 
-            // Prepare variables for binding to avoid "passed by reference" error
+            // Prepare variables for binding
             $lfather = trim($_POST['lfather'] ?? '');
             $ffather = trim($_POST['ffather'] ?? '');
             $mfather = trim($_POST['mfather'] ?? '');
@@ -467,31 +661,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $action === 'update') {
             $formattedFbirth = !empty($_POST['fbirth']) ? date('Y-m-d', strtotime($_POST['fbirth'])) : null;
             $formattedMbirth = !empty($_POST['mbirth']) ? date('Y-m-d', strtotime($_POST['mbirth'])) : null;
 
-            $parentsStmt->bindParam(':applicant_id', $applicantId);
-            $parentsStmt->bindParam(':lfather', $lfather);
-            $parentsStmt->bindParam(':ffather', $ffather);
-            $parentsStmt->bindParam(':mfather', $mfather);
-            $parentsStmt->bindParam(':sfxfather', $sfxfather);
-            $parentsStmt->bindParam(':fbirth', $formattedFbirth);
-            $parentsStmt->bindParam(':lmother', $lmother);
-            $parentsStmt->bindParam(':fmother', $fmother);
-            $parentsStmt->bindParam(':mmother', $mmother);
-            $parentsStmt->bindParam(':sfxmother', $sfxmother);
-            $parentsStmt->bindParam(':mbirth', $formattedMbirth);
+            mysqli_stmt_bind_param($parentsStmt, "isssssssssi",
+                $applicantId, $lfather, $ffather, $mfather, $sfxfather, $formattedFbirth,
+                $lmother, $fmother, $mmother, $sfxmother, $formattedMbirth);
 
-            $parentsStmt->execute();
+            mysqli_stmt_execute($parentsStmt);
 
             // Insert spouse data if provided
             if (!empty(trim($_POST['lspouse'] ?? '')) || !empty(trim($_POST['fspouse'] ?? ''))) {
                 $spouseSql = "INSERT INTO applicant_spouse (
                     applicant_id, lspouse, fspouse, mspouse, sfxspouse, sbirth
-                ) VALUES (
-                    :applicant_id, :lspouse, :fspouse, :mspouse, :sfxspouse, :sbirth
-                )";
+                ) VALUES (?, ?, ?, ?, ?, ?)";
 
-                $spouseStmt = $conn->prepare($spouseSql);
+                $spouseStmt = mysqli_prepare($conn, $spouseSql);
 
-                // Prepare variables for binding to avoid "passed by reference" error
+                // Prepare variables for binding
                 $lspouse = trim($_POST['lspouse'] ?? '');
                 $fspouse = trim($_POST['fspouse'] ?? '');
                 $mspouse = trim($_POST['mspouse'] ?? '');
@@ -500,39 +684,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $action === 'update') {
                 // Format date fields to ensure they're in YYYY-MM-DD format for DATE type
                 $formattedSbirth = !empty($_POST['sbirth']) ? date('Y-m-d', strtotime($_POST['sbirth'])) : null;
 
-                $spouseStmt->bindParam(':applicant_id', $applicantId);
-                $spouseStmt->bindParam(':lspouse', $lspouse);
-                $spouseStmt->bindParam(':fspouse', $fspouse);
-                $spouseStmt->bindParam(':mspouse', $mspouse);
-                $spouseStmt->bindParam(':sfxspouse', $sfxspouse);
-                $spouseStmt->bindParam(':sbirth', $formattedSbirth);
+                mysqli_stmt_bind_param($spouseStmt, "isssss",
+                    $applicantId, $lspouse, $fspouse, $mspouse, $sfxspouse, $formattedSbirth);
 
-                $spouseStmt->execute();
+                mysqli_stmt_execute($spouseStmt);
             }
 
             // Insert children data
             if (isset($_POST['children']) && is_array($_POST['children'])) {
                 $childSql = "INSERT INTO applicant_children (
                     applicant_id, lname, fname, mname, sfx, dbirth
-                ) VALUES (
-                    :applicant_id, :lname, :fname, :mname, :sfx, :dbirth
-                )";
-                
-                $childStmt = $conn->prepare($childSql);
+                ) VALUES (?, ?, ?, ?, ?, ?)";
+
+                $childStmt = mysqli_prepare($conn, $childSql);
 
                 foreach ($_POST['children'] as $child) {
                     if (!empty($child['lname']) || !empty($child['fname'])) {
                         // Format child date of birth to ensure it's in YYYY-MM-DD format for DATE type
                         $formattedChildDbirth = !empty($child['dbirth']) ? date('Y-m-d', strtotime($child['dbirth'])) : null;
-                        
-                        $childStmt->execute([
-                            ':applicant_id' => $applicantId,
-                            ':lname' => trim($child['lname'] ?? ''),
-                            ':fname' => trim($child['fname'] ?? ''),
-                            ':mname' => trim($child['mname'] ?? ''),
-                            ':sfx' => trim($child['sfx'] ?? ''),
-                            ':dbirth' => $formattedChildDbirth
-                        ]);
+
+                        mysqli_stmt_bind_param($childStmt, "isssss",
+                            $applicantId, $child['lname'], $child['fname'], $child['mname'], $child['sfx'], $formattedChildDbirth);
+
+                        mysqli_stmt_execute($childStmt);
                     }
                 }
             }
@@ -547,14 +721,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $action === 'update') {
                 $employmentSql = "INSERT INTO applicant_employment (
                     applicant_id, employment_type, profession, ystart, mearning,
                     faddress, ofw_monthly_earnings, spouse_ssnum, ffprogram, ffp
-                ) VALUES (
-                    :applicant_id, :employment_type, :profession, :ystart, :mearning,
-                    :faddress, :ofw_monthly_earnings, :spouse_ssnum, :ffprogram, :ffp
-                )";
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-                $employmentStmt = $conn->prepare($employmentSql);
+                $employmentStmt = mysqli_prepare($conn, $employmentSql);
 
-                // Prepare variables for binding to avoid "passed by reference" error
+                // Prepare variables for binding
                 $profession = trim($_POST['profession'] ?? '');
                 $ystart = trim($_POST['ystart'] ?? '');
                 $mearning = trim($_POST['mearning'] ?? '');
@@ -564,25 +735,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $action === 'update') {
                 $ffprogram = trim($_POST['ffprogram'] ?? '');
                 $ffp = trim($_POST['ffp'] ?? '');
 
-                $employmentStmt->bindParam(':applicant_id', $applicantId);
-                $employmentStmt->bindParam(':employment_type', $employmentType);
-                $employmentStmt->bindParam(':profession', $profession);
-                $employmentStmt->bindParam(':ystart', $ystart);
-                $employmentStmt->bindParam(':mearning', $mearning);
-                $employmentStmt->bindParam(':faddress', $faddress);
-                $employmentStmt->bindParam(':ofw_monthly_earnings', $ofw_monthly_earnings);
-                $employmentStmt->bindParam(':spouse_ssnum', $spouse_ssnum);
-                $employmentStmt->bindParam(':ffprogram', $ffprogram);
-                $employmentStmt->bindParam(':ffp', $ffp);
-                $employmentStmt->execute();
+                mysqli_stmt_bind_param($employmentStmt, "isssssssss",
+                    $applicantId, $employmentType, $profession, $ystart, $mearning,
+                    $faddress, $ofw_monthly_earnings, $spouse_ssnum, $ffprogram, $ffp);
+                
+                mysqli_stmt_execute($employmentStmt);
             }
 
-            $conn->commit();
+            mysqli_commit($conn);
             echo "<script>sessionStorage.setItem('formSuccess', 'true'); window.location.href='page1.html';</script>";
             exit();
 
-        } catch(PDOException $e) {
-            $conn->rollBack();
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            mysqli_rollback($conn);
             echo "<script>alert('Database error: " . $e->getMessage() . "'); window.history.back();</script>";
             exit();
         }

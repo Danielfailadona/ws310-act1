@@ -10,12 +10,15 @@
     <div id="success-message" style="display: none; background: #d4edda; color: #155724; padding: 15px; margin: 20px; border-radius: 4px; text-align: center; border: 1px solid #c3e6cb;">Personal record submitted successfully!</div>
     <div class="main">
         <form action="page1.php" method="post">
-            <div class="top-most" id="top-most">
-                <b>Personal Record</b>
-                <div class="fp-box" id="ssnum">
-                    <p>SS Number:</p>
-                    <input type="text" name="ssnum" placeholder="SS Number: ">
+            <div class="top-most">
+                <div class="ssnum-cont" id="ssnum-cont">
+                    <b>Personal Record</b>
+                    <div class="fp-box" id="ssnum">
+                        <p>SS Number:</p>
+                        <input type="text" name="ssnum" placeholder="SS Number: ">
+                    </div>
                 </div>
+                <button type="button" onclick="window.location.href='../crud/crud.html'">Back</button>
             </div>
 
             <div class="part1">
@@ -425,7 +428,7 @@
         // Function to load applicant data for editing
         async function loadApplicantData(id) {
             try {
-                const response = await fetch('../crud/crud.php?action=read_single&id=' + id);
+                const response = await fetch('../crud/crud-operations/read_single.php?id=' + id);
                 const data = await response.json();
 
                 if (data) {

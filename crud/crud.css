@@ -79,10 +79,6 @@ tbody tr:nth-child(even) {
     margin-top: 20px; 
 }
 
-.btn-download { 
-    background-color: #007bff; 
-    padding: 10px 15px; 
-}
 
 .btn-add { 
     background-color: var(--primary-blue); 

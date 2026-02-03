@@ -24,7 +24,7 @@ body{scroll-behavior: smooth; display: flex; align-items: center; justify-conten
     position: relative;
 }
 
-.top-most, #top-most{display: flex; flex-direction: row; align-items: center; justify-content: flex-start; gap: 10px; width: 100%;}
+.ssnum-cont, #ssnum-cont{width: auto; display: flex; flex-direction: row; align-items: center; justify-content: flex-start; gap: 10px;}
 #ssnum{width: 200px;}
 #ssnum input{width: 100%; box-sizing: border-box;}
 
@@ -116,7 +116,7 @@ body{scroll-behavior: smooth; display: flex; align-items: center; justify-conten
 .sss-area{height: 40px; border: 1px dashed #d1d5db; background-color: #fafafa; display: flex; align-items: center; justify-content: center; border-radius: 4px;}
 
 
-input[type="submit"]{
+input[type="submit"], button[type="button"] {
     background: var(--primary-blue);
     border: 1px solid var(--primary-blue);
     color: white;
