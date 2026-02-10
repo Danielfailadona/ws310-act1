@@ -42,6 +42,7 @@ ws310-act1/
   - Dynamic child addition functionality
   - Address synchronization with place of birth
   - Edit mode for updating existing records
+  - Embedded CSS styling based on foreign file approach
 
 - **page1.php**: Backend processing for form submissions
   - Handles both insert and update operations
@@ -56,6 +57,7 @@ ws310-act1/
   - Delete operations with confirmation
   - CSV export capability
   - Integration with CRUD operation files
+  - Embedded CSS styling based on foreign file approach
 
 - **crud-operations/**: Backend files for CRUD operations
   - **db_connection.php**: Shared database connection function
@@ -91,6 +93,11 @@ The application uses a normalized database structure with 6 related tables:
 - **Update**: Modify existing records
 - **Delete**: Remove records with confirmation
 - **Export**: Download data as CSV
+
+### Navigation Features
+- **Add New Records**: Redirect from CRUD table to comprehensive form
+- **Edit Records**: Click edit button to load applicant data into form for editing
+- **URL Parameters**: Use query parameters to determine form mode (add vs edit)
 
 ### Security Features
 - Prepared statements to prevent SQL injection

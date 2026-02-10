@@ -1,11 +1,6 @@
 <?php
-// Include the UniversalCRUD class
-require_once '../universal-crud/UniversalCRUD.php';
-
-// Validation function
-function validateRequired($value) {
-    return !empty(trim($value));
-}
+// Include the Usables class
+require_once '../usables/usables.php';
 
 // Determine action based on the action parameter
 $action = $_GET['action'] ?? 'insert';
@@ -46,105 +41,169 @@ function handleUpdate() {
 
     if (empty($errors)) {
         try {
-            // Create CRUD instances for different tables
-            $applicantCrud = new UniversalCRUD('applicants');
-            $addressCrud = new UniversalCRUD('applicant_addresses');
-            $parentsCrud = new UniversalCRUD('applicant_parents');
-            $spouseCrud = new UniversalCRUD('applicant_spouse');
-            $employmentCrud = new UniversalCRUD('applicant_employment');
+            // Create Usables instance
+            $usables = new Usables();
 
             // Prepare applicant data
-            $applicantData = [
-                'ssnum' => trim($_POST['ssnum'] ?? ''),
-                'lname' => trim($_POST['lname'] ?? ''),
-                'fname' => trim($_POST['fname'] ?? ''),
-                'mname' => trim($_POST['mname'] ?? ''),
-                'sfx' => trim($_POST['sfx'] ?? ''),
-                'dbirth' => !empty($_POST['dbirth']) ? date('Y-m-d', strtotime($_POST['dbirth'])) : null,
-                'sex' => trim($_POST['sex'] ?? ''),
-                'cvstatus' => trim($_POST['cvstatus'] ?? ''),
-                'cvstatus_other' => trim($_POST['cvstatus_other'] ?? ''),
-                'taxid' => trim($_POST['taxid'] ?? ''),
-                'nation' => trim($_POST['nation'] ?? ''),
-                'religion' => trim($_POST['religion'] ?? ''),
-                'pbirth' => trim($_POST['pbirth'] ?? ''),
-                'cphone' => trim($_POST['cphone'] ?? ''),
-                'email' => trim($_POST['email'] ?? ''),
-                'tphone' => trim($_POST['tphone'] ?? ''),
-                'printed_name' => trim($_POST['printed-name'] ?? ''),
-                'cert_date' => !empty($_POST['cert-date']) ? date('Y-m-d', strtotime($_POST['cert-date'])) : null
-            ];
+            $ssnum = clean($_POST['ssnum'] ?? '');
+            $lname = clean($_POST['lname'] ?? '');
+            $fname = clean($_POST['fname'] ?? '');
+            $mname = clean($_POST['mname'] ?? '');
+            $sfx = clean($_POST['sfx'] ?? '');
+            $dbirth = !empty($_POST['dbirth']) ? formatDateForDB($_POST['dbirth']) : null;
+            $sex = clean($_POST['sex'] ?? '');
+            $cvstatus = clean($_POST['cvstatus'] ?? '');
+            $cvstatus_other = clean($_POST['cvstatus_other'] ?? '');
+            $taxid = clean($_POST['taxid'] ?? '');
+            $nation = clean($_POST['nation'] ?? '');
+            $religion = clean($_POST['religion'] ?? '');
+            $pbirth = clean($_POST['pbirth'] ?? '');
+            $cphone = clean($_POST['cphone'] ?? '');
+            $email = clean($_POST['email'] ?? '');
+            $tphone = clean($_POST['tphone'] ?? '');
+            $printed_name = clean($_POST['printed-name'] ?? '');
+            $cert_date = !empty($_POST['cert-date']) ? formatDateForDB($_POST['cert-date']) : null;
 
-            // Update applicant data
-            $applicantSuccess = $applicantCrud->update($applicantData, ['applicant_id' => $applicantId]);
+            // Update applicant data using the Usables class
+            $applicantSuccess = $usables->updateDataInDatabase(
+                'applicants',
+                [
+                    'ssnum' => $ssnum,
+                    'lname' => $lname,
+                    'fname' => $fname,
+                    'mname' => $mname,
+                    'sfx' => $sfx,
+                    'dbirth' => $dbirth,
+                    'sex' => $sex,
+                    'cvstatus' => $cvstatus,
+                    'cvstatus_other' => $cvstatus_other,
+                    'taxid' => $taxid,
+                    'nation' => $nation,
+                    'religion' => $religion,
+                    'pbirth' => $pbirth,
+                    'cphone' => $cphone,
+                    'email' => $email,
+                    'tphone' => $tphone,
+                    'printed_name' => $printed_name,
+                    'cert_date' => $cert_date
+                ],
+                ['applicant_id' => $applicantId]
+            );
 
             // Prepare address data
-            $addressData = [
-                'address_1' => trim($_POST['address-1'] ?? ''),
-                'address_2' => trim($_POST['address-2'] ?? ''),
-                'address_3' => trim($_POST['address-3'] ?? ''),
-                'address_4' => trim($_POST['address-4'] ?? ''),
-                'address_5' => trim($_POST['address-5'] ?? ''),
-                'address_6' => trim($_POST['address-6'] ?? ''),
-                'address_7' => trim($_POST['address-7'] ?? ''),
-                'address_8' => trim($_POST['address-8'] ?? ''),
-                'address_9' => trim($_POST['address-9'] ?? ''),
-                'same_as_pbirth' => isset($_POST['same_as_pbirth']) ? 1 : 0
-            ];
+            $address_1 = clean($_POST['address-1'] ?? '');
+            $address_2 = clean($_POST['address-2'] ?? '');
+            $address_3 = clean($_POST['address-3'] ?? '');
+            $address_4 = clean($_POST['address-4'] ?? '');
+            $address_5 = clean($_POST['address-5'] ?? '');
+            $address_6 = clean($_POST['address-6'] ?? '');
+            $address_7 = clean($_POST['address-7'] ?? '');
+            $address_8 = clean($_POST['address-8'] ?? '');
+            $address_9 = clean($_POST['address-9'] ?? '');
+            $same_as_pbirth = isset($_POST['same_as_pbirth']) ? 1 : 0;
 
-            // Update address data
-            $addressSuccess = $addressCrud->update($addressData, ['applicant_id' => $applicantId]);
+            // Update address data using the Usables class
+            $addressSuccess = $usables->updateDataInDatabase(
+                'applicant_addresses',
+                [
+                    'address_1' => $address_1,
+                    'address_2' => $address_2,
+                    'address_3' => $address_3,
+                    'address_4' => $address_4,
+                    'address_5' => $address_5,
+                    'address_6' => $address_6,
+                    'address_7' => $address_7,
+                    'address_8' => $address_8,
+                    'address_9' => $address_9,
+                    'same_as_pbirth' => $same_as_pbirth
+                ],
+                ['applicant_id' => $applicantId]
+            );
 
             // Prepare parents data
-            $parentsData = [
-                'lfather' => trim($_POST['lfather'] ?? ''),
-                'ffather' => trim($_POST['ffather'] ?? ''),
-                'mfather' => trim($_POST['mfather'] ?? ''),
-                'sfxfather' => trim($_POST['sfxfather'] ?? ''),
-                'fbirth' => !empty($_POST['fbirth']) ? date('Y-m-d', strtotime($_POST['fbirth'])) : null,
-                'lmother' => trim($_POST['lmother'] ?? ''),
-                'fmother' => trim($_POST['fmother'] ?? ''),
-                'mmother' => trim($_POST['mmother'] ?? ''),
-                'sfxmother' => trim($_POST['sfxmother'] ?? ''),
-                'mbirth' => !empty($_POST['mbirth']) ? date('Y-m-d', strtotime($_POST['mbirth'])) : null
-            ];
+            $lfather = clean($_POST['lfather'] ?? '');
+            $ffather = clean($_POST['ffather'] ?? '');
+            $mfather = clean($_POST['mfather'] ?? '');
+            $sfxfather = clean($_POST['sfxfather'] ?? '');
+            $fbirth = !empty($_POST['fbirth']) ? formatDateForDB($_POST['fbirth']) : null;
+            $lmother = clean($_POST['lmother'] ?? '');
+            $fmother = clean($_POST['fmother'] ?? '');
+            $mmother = clean($_POST['mmother'] ?? '');
+            $sfxmother = clean($_POST['sfxmother'] ?? '');
+            $mbirth = !empty($_POST['mbirth']) ? formatDateForDB($_POST['mbirth']) : null;
 
-            // Update parents data
-            $parentsSuccess = $parentsCrud->update($parentsData, ['applicant_id' => $applicantId]);
+            // Update parents data using the Usables class
+            $parentsSuccess = $usables->updateDataInDatabase(
+                'applicant_parents',
+                [
+                    'lfather' => $lfather,
+                    'ffather' => $ffather,
+                    'mfather' => $mfather,
+                    'sfxfather' => $sfxfather,
+                    'fbirth' => $fbirth,
+                    'lmother' => $lmother,
+                    'fmother' => $fmother,
+                    'mmother' => $mmother,
+                    'sfxmother' => $sfxmother,
+                    'mbirth' => $mbirth
+                ],
+                ['applicant_id' => $applicantId]
+            );
 
             // Prepare spouse data if provided
             $spouseSuccess = true; // Assume success if no spouse data
-            if (!empty(trim($_POST['lspouse'] ?? '')) || !empty(trim($_POST['fspouse'] ?? ''))) {
-                $spouseData = [
-                    'lspouse' => trim($_POST['lspouse'] ?? ''),
-                    'fspouse' => trim($_POST['fspouse'] ?? ''),
-                    'mspouse' => trim($_POST['mspouse'] ?? ''),
-                    'sfxspouse' => trim($_POST['sfxspouse'] ?? ''),
-                    'sbirth' => !empty($_POST['sbirth']) ? date('Y-m-d', strtotime($_POST['sbirth'])) : null
-                ];
-                $spouseSuccess = $spouseCrud->update($spouseData, ['applicant_id' => $applicantId]);
+            if (!empty(clean($_POST['lspouse'] ?? '')) || !empty(clean($_POST['fspouse'] ?? ''))) {
+                $lspouse = clean($_POST['lspouse'] ?? '');
+                $fspouse = clean($_POST['fspouse'] ?? '');
+                $mspouse = clean($_POST['mspouse'] ?? '');
+                $sfxspouse = clean($_POST['sfxspouse'] ?? '');
+                $sbirth = !empty($_POST['sbirth']) ? formatDateForDB($_POST['sbirth']) : null;
+
+                $spouseSuccess = $usables->updateDataInDatabase(
+                    'applicant_spouse',
+                    [
+                        'lspouse' => $lspouse,
+                        'fspouse' => $fspouse,
+                        'mspouse' => $mspouse,
+                        'sfxspouse' => $sfxspouse,
+                        'sbirth' => $sbirth
+                    ],
+                    ['applicant_id' => $applicantId]
+                );
             }
 
             // Prepare employment data
             $employmentSuccess = true; // Assume success if no employment data
             $employmentType = '';
-            if (!empty(trim($_POST['profession'] ?? ''))) $employmentType = 'Self-Employed';
-            elseif (!empty(trim($_POST['faddress'] ?? ''))) $employmentType = 'OFW';
-            elseif (!empty(trim($_POST['spouse-ssnum'] ?? ''))) $employmentType = 'Non-Working Spouse';
+            if (!empty(clean($_POST['profession'] ?? ''))) $employmentType = 'Self-Employed';
+            elseif (!empty(clean($_POST['faddress'] ?? ''))) $employmentType = 'OFW';
+            elseif (!empty(clean($_POST['spouse-ssnum'] ?? ''))) $employmentType = 'Non-Working Spouse';
 
             if (!empty($employmentType)) {
-                $employmentData = [
-                    'employment_type' => $employmentType,
-                    'profession' => trim($_POST['profession'] ?? ''),
-                    'ystart' => trim($_POST['ystart'] ?? ''),
-                    'mearning' => trim($_POST['mearning'] ?? ''),
-                    'faddress' => trim($_POST['faddress'] ?? ''),
-                    'ofw_monthly_earnings' => trim($_POST['ofw_monthly_earnings'] ?? ''),
-                    'spouse_ssnum' => trim($_POST['spouse-ssnum'] ?? ''),
-                    'ffprogram' => trim($_POST['ffprogram'] ?? ''),
-                    'ffp' => trim($_POST['ffp'] ?? '')
-                ];
-                $employmentSuccess = $employmentCrud->update($employmentData, ['applicant_id' => $applicantId]);
+                $profession = clean($_POST['profession'] ?? '');
+                $ystart = clean($_POST['ystart'] ?? '');
+                $mearning = clean($_POST['mearning'] ?? '');
+                $faddress = clean($_POST['faddress'] ?? '');
+                $ofw_monthly_earnings = clean($_POST['ofw_monthly_earnings'] ?? '');
+                $spouse_ssnum = clean($_POST['spouse-ssnum'] ?? '');
+                $ffprogram = clean($_POST['ffprogram'] ?? '');
+                $ffp = clean($_POST['ffp'] ?? '');
+
+                $employmentSuccess = $usables->updateDataInDatabase(
+                    'applicant_employment',
+                    [
+                        'employment_type' => $employmentType,
+                        'profession' => $profession,
+                        'ystart' => $ystart,
+                        'mearning' => $mearning,
+                        'faddress' => $faddress,
+                        'ofw_monthly_earnings' => $ofw_monthly_earnings,
+                        'spouse_ssnum' => $spouse_ssnum,
+                        'ffprogram' => $ffprogram,
+                        'ffp' => $ffp
+                    ],
+                    ['applicant_id' => $applicantId]
+                );
             }
 
             // Check if all operations were successful
@@ -177,25 +236,25 @@ function handleInsert() {
     $errors = [];
 
     // Validate required fields
-    $ssnum = trim($_POST['ssnum'] ?? '');
+    $ssnum = clean($_POST['ssnum'] ?? '');
     if (!validateRequired($ssnum)) {
         $errors[] = "SS Number is required";
     }
 
-    $lname = trim($_POST['lname'] ?? '');
+    $lname = clean($_POST['lname'] ?? '');
     if (!validateRequired($lname)) {
         $errors[] = "Last Name is required";
     }
 
-    $fname = trim($_POST['fname'] ?? '');
+    $fname = clean($_POST['fname'] ?? '');
     if (!validateRequired($fname)) {
         $errors[] = "First Name is required";
     }
 
-    $dbirth = trim($_POST['dbirth'] ?? '');
+    $dbirth = clean($_POST['dbirth'] ?? '');
     if (!validateRequired($dbirth)) {
         $errors[] = "Date of Birth is required";
-    } elseif (!empty($dbirth) && strtotime($dbirth) >= time()) {
+    } elseif (!empty($dbirth) && !validatePastDate($dbirth)) {
         $errors[] = "Date of Birth must be in the past";
     }
 
@@ -203,145 +262,221 @@ function handleInsert() {
     if (!validateRequired($_POST['cvstatus'] ?? '')) $errors[] = "Civil Status is required";
     if (!validateRequired($_POST['nation'] ?? '')) $errors[] = "Nationality is required";
     if (!validateRequired($_POST['pbirth'] ?? '')) $errors[] = "Place of Birth is required";
-    if (!validateRequired($_POST['address_6'] ?? '')) $errors[] = "Address (City) is required";
-    if (!validateRequired($_POST['address_7'] ?? '')) $errors[] = "Address (Province) is required";
+    if (!validateRequired($_POST['address-6'] ?? '')) $errors[] = "Address (City) is required";
+    if (!validateRequired($_POST['address-7'] ?? '')) $errors[] = "Address (Province) is required";
+    if (!validateRequired($_POST['address-9'] ?? '')) $errors[] = "Zip Code is required";
     if (!validateRequired($_POST['cphone'] ?? '')) $errors[] = "Mobile Number is required";
 
-    $email = trim($_POST['email'] ?? '');
+    $email = clean($_POST['email'] ?? '');
     if (!validateRequired($email)) {
         $errors[] = "Email is required";
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    } elseif (!validateEmail($email)) {
         $errors[] = "Invalid email format";
     }
 
-    $cphone = trim($_POST['cphone'] ?? '');
-    if (!empty($cphone) && !preg_match('/^[0-9+\-\s()]+$/', preg_replace('/\D/', '', $cphone))) {
-        $errors[] = "Invalid phone number format";
+    $cphone = clean($_POST['cphone'] ?? '');
+    if (!empty($cphone) && !validatePhone($cphone)) {
+        $errors[] = "Invalid phone number format (must be 09XXXXXXXXX or +639XXXXXXXXX)";
+    }
+
+    // Check if email already exists using the Usables class
+    if (empty($errors) && !empty($email)) {
+        $usables = new Usables();
+        $emailExists = $usables->recordExists('applicants', ['email' => $email]);
+        if ($emailExists) {
+            $errors[] = "An account with this email already exists";
+        }
     }
 
     // If no errors, process the data
     if (empty($errors)) {
         try {
-            // Create CRUD instances for different tables
-            $applicantCrud = new UniversalCRUD('applicants');
-            $addressCrud = new UniversalCRUD('applicant_addresses');
-            $parentsCrud = new UniversalCRUD('applicant_parents');
-            $spouseCrud = new UniversalCRUD('applicant_spouse');
-            $childrenCrud = new UniversalCRUD('applicant_children');
-            $employmentCrud = new UniversalCRUD('applicant_employment');
+            // Create Usables instance
+            $usables = new Usables();
 
             // Prepare applicant data
-            $applicantData = [
-                'ssnum' => $ssnum,
-                'lname' => $lname,
-                'fname' => $fname,
-                'mname' => trim($_POST['mname'] ?? ''),
-                'sfx' => trim($_POST['sfx'] ?? ''),
-                'dbirth' => date('Y-m-d', strtotime($dbirth)),  // Format date for DATE type
-                'sex' => trim($_POST['sex'] ?? ''),
-                'cvstatus' => trim($_POST['cvstatus'] ?? ''),
-                'cvstatus_other' => trim($_POST['cvstatus_other'] ?? ''),
-                'taxid' => trim($_POST['taxid'] ?? ''),
-                'nation' => trim($_POST['nation'] ?? ''),
-                'religion' => trim($_POST['religion'] ?? ''),
-                'pbirth' => trim($_POST['pbirth'] ?? ''),
-                'cphone' => $cphone,
-                'email' => $email,
-                'tphone' => trim($_POST['tphone'] ?? ''),
-                'printed_name' => trim($_POST['printed-name'] ?? ''),
-                'cert_date' => !empty($_POST['cert-date']) ? date('Y-m-d', strtotime($_POST['cert-date'])) : null
-            ];
+            $ssnum = clean($ssnum);
+            $lname = clean($lname);
+            $fname = clean($fname);
+            $mname = clean($_POST['mname'] ?? '');
+            $sfx = clean($_POST['sfx'] ?? '');
+            $dbirth = formatDateForDB($dbirth);  // Format date for DATE type
+            $sex = clean($_POST['sex'] ?? '');
+            $cvstatus = clean($_POST['cvstatus'] ?? '');
+            $cvstatus_other = clean($_POST['cvstatus_other'] ?? '');
+            $taxid = clean($_POST['taxid'] ?? '');
+            $nation = clean($_POST['nation'] ?? '');
+            $religion = clean($_POST['religion'] ?? '');
+            $pbirth = clean($_POST['pbirth'] ?? '');
+            $cphone = clean($cphone);
+            $email = clean($email);
+            $tphone = clean($_POST['tphone'] ?? '');
+            $printed_name = clean($_POST['printed-name'] ?? '');
+            $cert_date = !empty($_POST['cert-date']) ? formatDateForDB($_POST['cert-date']) : null;
 
-            // Insert applicant data
-            $applicantId = $applicantCrud->create($applicantData);
+            // Insert applicant data using the Usables class
+            $applicantId = $usables->insertDataToDatabase(
+                'applicants',
+                [
+                    'ssnum' => $ssnum,
+                    'lname' => $lname,
+                    'fname' => $fname,
+                    'mname' => $mname,
+                    'sfx' => $sfx,
+                    'dbirth' => $dbirth,
+                    'sex' => $sex,
+                    'cvstatus' => $cvstatus,
+                    'cvstatus_other' => $cvstatus_other,
+                    'taxid' => $taxid,
+                    'nation' => $nation,
+                    'religion' => $religion,
+                    'pbirth' => $pbirth,
+                    'cphone' => $cphone,
+                    'email' => $email,
+                    'tphone' => $tphone,
+                    'printed_name' => $printed_name,
+                    'cert_date' => $cert_date
+                ]
+            );
 
             if ($applicantId) {
                 // Prepare address data
-                $addressData = [
-                    'applicant_id' => $applicantId,
-                    'address_1' => trim($_POST['address-1'] ?? ''),
-                    'address_2' => trim($_POST['address-2'] ?? ''),
-                    'address_3' => trim($_POST['address-3'] ?? ''),
-                    'address_4' => trim($_POST['address-4'] ?? ''),
-                    'address_5' => trim($_POST['address-5'] ?? ''),
-                    'address_6' => trim($_POST['address-6'] ?? ''),
-                    'address_7' => trim($_POST['address-7'] ?? ''),
-                    'address_8' => trim($_POST['address-8'] ?? ''),
-                    'address_9' => trim($_POST['address-9'] ?? ''),
-                    'same_as_pbirth' => isset($_POST['same_as_pbirth']) ? 1 : 0
-                ];
+                $address_1 = clean($_POST['address-1'] ?? '');
+                $address_2 = clean($_POST['address-2'] ?? '');
+                $address_3 = clean($_POST['address-3'] ?? '');
+                $address_4 = clean($_POST['address-4'] ?? '');
+                $address_5 = clean($_POST['address-5'] ?? '');
+                $address_6 = clean($_POST['address-6'] ?? '');
+                $address_7 = clean($_POST['address-7'] ?? '');
+                $address_8 = clean($_POST['address-8'] ?? '');
+                $address_9 = clean($_POST['address-9'] ?? '');
+                $same_as_pbirth = isset($_POST['same_as_pbirth']) ? 1 : 0;
 
-                // Insert address data
-                $addressId = $addressCrud->create($addressData);
+                // Insert address data using the Usables class
+                $addrResult = $usables->insertDataToDatabase(
+                    'applicant_addresses',
+                    [
+                        'applicant_id' => $applicantId,
+                        'address_1' => $address_1,
+                        'address_2' => $address_2,
+                        'address_3' => $address_3,
+                        'address_4' => $address_4,
+                        'address_5' => $address_5,
+                        'address_6' => $address_6,
+                        'address_7' => $address_7,
+                        'address_8' => $address_8,
+                        'address_9' => $address_9,
+                        'same_as_pbirth' => $same_as_pbirth
+                    ]
+                );
 
                 // Prepare parents data
-                $parentsData = [
-                    'applicant_id' => $applicantId,
-                    'lfather' => trim($_POST['lfather'] ?? ''),
-                    'ffather' => trim($_POST['ffather'] ?? ''),
-                    'mfather' => trim($_POST['mfather'] ?? ''),
-                    'sfxfather' => trim($_POST['sfxfather'] ?? ''),
-                    'fbirth' => !empty($_POST['fbirth']) ? date('Y-m-d', strtotime($_POST['fbirth'])) : null,
-                    'lmother' => trim($_POST['lmother'] ?? ''),
-                    'fmother' => trim($_POST['fmother'] ?? ''),
-                    'mmother' => trim($_POST['mmother'] ?? ''),
-                    'sfxmother' => trim($_POST['sfxmother'] ?? ''),
-                    'mbirth' => !empty($_POST['mbirth']) ? date('Y-m-d', strtotime($_POST['mbirth'])) : null
-                ];
+                $lfather = clean($_POST['lfather'] ?? '');
+                $ffather = clean($_POST['ffather'] ?? '');
+                $mfather = clean($_POST['mfather'] ?? '');
+                $sfxfather = clean($_POST['sfxfather'] ?? '');
+                $fbirth = !empty($_POST['fbirth']) ? formatDateForDB($_POST['fbirth']) : null;
+                $lmother = clean($_POST['lmother'] ?? '');
+                $fmother = clean($_POST['fmother'] ?? '');
+                $mmother = clean($_POST['mmother'] ?? '');
+                $sfxmother = clean($_POST['sfxmother'] ?? '');
+                $mbirth = !empty($_POST['mbirth']) ? formatDateForDB($_POST['mbirth']) : null;
 
-                // Insert parents data
-                $parentsId = $parentsCrud->create($parentsData);
+                // Insert parents data using the Usables class
+                $parentsResult = $usables->insertDataToDatabase(
+                    'applicant_parents',
+                    [
+                        'applicant_id' => $applicantId,
+                        'lfather' => $lfather,
+                        'ffather' => $ffather,
+                        'mfather' => $mfather,
+                        'sfxfather' => $sfxfather,
+                        'fbirth' => $fbirth,
+                        'lmother' => $lmother,
+                        'fmother' => $fmother,
+                        'mmother' => $mmother,
+                        'sfxmother' => $sfxmother,
+                        'mbirth' => $mbirth
+                    ]
+                );
 
                 // Insert spouse data if provided
-                if (!empty(trim($_POST['lspouse'] ?? '')) || !empty(trim($_POST['fspouse'] ?? ''))) {
-                    $spouseData = [
-                        'applicant_id' => $applicantId,
-                        'lspouse' => trim($_POST['lspouse'] ?? ''),
-                        'fspouse' => trim($_POST['fspouse'] ?? ''),
-                        'mspouse' => trim($_POST['mspouse'] ?? ''),
-                        'sfxspouse' => trim($_POST['sfxspouse'] ?? ''),
-                        'sbirth' => !empty($_POST['sbirth']) ? date('Y-m-d', strtotime($_POST['sbirth'])) : null
-                    ];
-                    $spouseId = $spouseCrud->create($spouseData);
+                if (!empty(clean($_POST['lspouse'] ?? '')) || !empty(clean($_POST['fspouse'] ?? ''))) {
+                    $lspouse = clean($_POST['lspouse'] ?? '');
+                    $fspouse = clean($_POST['fspouse'] ?? '');
+                    $mspouse = clean($_POST['mspouse'] ?? '');
+                    $sfxspouse = clean($_POST['sfxspouse'] ?? '');
+                    $sbirth = !empty($_POST['sbirth']) ? formatDateForDB($_POST['sbirth']) : null;
+
+                    $spouseResult = $usables->insertDataToDatabase(
+                        'applicant_spouse',
+                        [
+                            'applicant_id' => $applicantId,
+                            'lspouse' => $lspouse,
+                            'fspouse' => $fspouse,
+                            'mspouse' => $mspouse,
+                            'sfxspouse' => $sfxspouse,
+                            'sbirth' => $sbirth
+                        ]
+                    );
                 }
 
                 // Insert children data
                 if (isset($_POST['children']) && is_array($_POST['children'])) {
                     foreach ($_POST['children'] as $child) {
                         if (!empty($child['lname']) || !empty($child['fname'])) {
-                            $childData = [
-                                'applicant_id' => $applicantId,
-                                'lname' => trim($child['lname'] ?? ''),
-                                'fname' => trim($child['fname'] ?? ''),
-                                'mname' => trim($child['mname'] ?? ''),
-                                'sfx' => trim($child['sfx'] ?? ''),
-                                'dbirth' => !empty($child['dbirth']) ? date('Y-m-d', strtotime($child['dbirth'])) : null
-                            ];
-                            $childrenCrud->create($childData);
+                            $child_lname = clean($child['lname'] ?? '');
+                            $child_fname = clean($child['fname'] ?? '');
+                            $child_mname = clean($child['mname'] ?? '');
+                            $child_sfx = clean($child['sfx'] ?? '');
+                            $child_dbirth = !empty($child['dbirth']) ? formatDateForDB($child['dbirth']) : null;
+
+                            $usables->insertDataToDatabase(
+                                'applicant_children',
+                                [
+                                    'applicant_id' => $applicantId,
+                                    'lname' => $child_lname,
+                                    'fname' => $child_fname,
+                                    'mname' => $child_mname,
+                                    'sfx' => $child_sfx,
+                                    'dbirth' => $child_dbirth
+                                ]
+                            );
                         }
                     }
                 }
 
                 // Insert employment data
                 $employmentType = '';
-                if (!empty(trim($_POST['profession'] ?? ''))) $employmentType = 'Self-Employed';
-                elseif (!empty(trim($_POST['faddress'] ?? ''))) $employmentType = 'OFW';
-                elseif (!empty(trim($_POST['spouse-ssnum'] ?? ''))) $employmentType = 'Non-Working Spouse';
+                if (!empty(clean($_POST['profession'] ?? ''))) $employmentType = 'Self-Employed';
+                elseif (!empty(clean($_POST['faddress'] ?? ''))) $employmentType = 'OFW';
+                elseif (!empty(clean($_POST['spouse-ssnum'] ?? ''))) $employmentType = 'Non-Working Spouse';
 
                 if (!empty($employmentType)) {
-                    $employmentData = [
-                        'applicant_id' => $applicantId,
-                        'employment_type' => $employmentType,
-                        'profession' => trim($_POST['profession'] ?? ''),
-                        'ystart' => trim($_POST['ystart'] ?? ''),
-                        'mearning' => trim($_POST['mearning'] ?? ''),
-                        'faddress' => trim($_POST['faddress'] ?? ''),
-                        'ofw_monthly_earnings' => trim($_POST['ofw_monthly_earnings'] ?? ''),
-                        'spouse_ssnum' => trim($_POST['spouse-ssnum'] ?? ''),
-                        'ffprogram' => trim($_POST['ffprogram'] ?? ''),
-                        'ffp' => trim($_POST['ffp'] ?? '')
-                    ];
-                    $employmentId = $employmentCrud->create($employmentData);
+                    $profession = clean($_POST['profession'] ?? '');
+                    $ystart = clean($_POST['ystart'] ?? '');
+                    $mearning = clean($_POST['mearning'] ?? '');
+                    $faddress = clean($_POST['faddress'] ?? '');
+                    $ofw_monthly_earnings = clean($_POST['ofw_monthly_earnings'] ?? '');
+                    $spouse_ssnum = clean($_POST['spouse-ssnum'] ?? '');
+                    $ffprogram = clean($_POST['ffprogram'] ?? '');
+                    $ffp = clean($_POST['ffp'] ?? '');
+
+                    $usables->insertDataToDatabase(
+                        'applicant_employment',
+                        [
+                            'applicant_id' => $applicantId,
+                            'employment_type' => $employmentType,
+                            'profession' => $profession,
+                            'ystart' => $ystart,
+                            'mearning' => $mearning,
+                            'faddress' => $faddress,
+                            'ofw_monthly_earnings' => $ofw_monthly_earnings,
+                            'spouse_ssnum' => $spouse_ssnum,
+                            'ffprogram' => $ffprogram,
+                            'ffp' => $ffp
+                        ]
+                    );
                 }
 
                 echo "<script>sessionStorage.setItem('formSuccess', 'true'); window.location.href='page1.html';</script>";
@@ -364,398 +499,4 @@ function handleInsert() {
 }
 
 //==============================
-?>
-
-            $updateStmt = mysqli_prepare($conn, $updateSql);
-
-            // Prepare variables for binding
-            $ssnum = trim($_POST['ssnum'] ?? '');
-            $lname = trim($_POST['lname'] ?? '');
-            $fname = trim($_POST['fname'] ?? '');
-            $mname = trim($_POST['mname'] ?? '');
-            $sfx = trim($_POST['sfx'] ?? '');
-
-            // Format date to ensure it's in YYYY-MM-DD format for DATE type
-            $dbirth = !empty($_POST['dbirth']) ? date('Y-m-d', strtotime($_POST['dbirth'])) : null;
-
-            $sex = trim($_POST['sex'] ?? '');
-            $cvstatus = trim($_POST['cvstatus'] ?? '');
-            $cvstatus_other = trim($_POST['cvstatus_other'] ?? '');
-            $taxid = trim($_POST['taxid'] ?? '');
-            $nation = trim($_POST['nation'] ?? '');
-            $religion = trim($_POST['religion'] ?? '');
-            $pbirth = trim($_POST['pbirth'] ?? '');
-            $cphone = trim($_POST['cphone'] ?? '');
-            $email = trim($_POST['email'] ?? '');
-            $tphone = trim($_POST['tphone'] ?? '');
-            $printed_name = trim($_POST['printed-name'] ?? '');
-
-            // Format date fields to ensure they're in YYYY-MM-DD format for DATE type
-            $cert_date = !empty($_POST['cert-date']) ? date('Y-m-d', strtotime($_POST['cert-date'])) : null;
-
-            // Bind parameters
-            mysqli_stmt_bind_param($updateStmt, "ssssssssssssssssssi", 
-                $ssnum, $lname, $fname, $mname, $sfx, $dbirth, $sex, $cvstatus, $cvstatus_other,
-                $taxid, $nation, $religion, $pbirth, $cphone, $email, $tphone, $printed_name, $cert_date, $applicantId);
-
-            mysqli_stmt_execute($updateStmt);
-
-            // Update address data
-            $addressUpdateSql = "UPDATE applicant_addresses SET
-                address_1 = ?, address_2 = ?, address_3 = ?, address_4 = ?, address_5 = ?,
-                address_6 = ?, address_7 = ?, address_8 = ?, address_9 = ?, same_as_pbirth = ?
-            WHERE applicant_id = ?";
-
-            $addressUpdateStmt = mysqli_prepare($conn, $addressUpdateSql);
-
-            // Prepare address variables
-            $address_1 = trim($_POST['address-1'] ?? '');
-            $address_2 = trim($_POST['address-2'] ?? '');
-            $address_3 = trim($_POST['address-3'] ?? '');
-            $address_4 = trim($_POST['address-4'] ?? '');
-            $address_5 = trim($_POST['address-5'] ?? '');
-            $address_6 = trim($_POST['address-6'] ?? '');
-            $address_7 = trim($_POST['address-7'] ?? '');
-            $address_8 = trim($_POST['address-8'] ?? '');
-            $address_9 = trim($_POST['address-9'] ?? '');
-            $same_as_pbirth = isset($_POST['same_as_pbirth']) ? 1 : 0;
-
-            mysqli_stmt_bind_param($addressUpdateStmt, "sssssssssi", 
-                $address_1, $address_2, $address_3, $address_4, $address_5,
-                $address_6, $address_7, $address_8, $address_9, $same_as_pbirth, $applicantId);
-
-            mysqli_stmt_execute($addressUpdateStmt);
-
-            // Update parents data
-            $parentsUpdateSql = "UPDATE applicant_parents SET
-                lfather = ?, ffather = ?, mfather = ?, sfxfather = ?, fbirth = ?,
-                lmother = ?, fmother = ?, mmother = ?, sfxmother = ?, mbirth = ?
-            WHERE applicant_id = ?";
-
-            $parentsUpdateStmt = mysqli_prepare($conn, $parentsUpdateSql);
-
-            // Prepare parents variables
-            $lfather = trim($_POST['lfather'] ?? '');
-            $ffather = trim($_POST['ffather'] ?? '');
-            $mfather = trim($_POST['mfather'] ?? '');
-            $sfxfather = trim($_POST['sfxfather'] ?? '');
-
-            // Format date fields to ensure they're in YYYY-MM-DD format for DATE type
-            $fbirth = !empty($_POST['fbirth']) ? date('Y-m-d', strtotime($_POST['fbirth'])) : null;
-
-            $lmother = trim($_POST['lmother'] ?? '');
-            $fmother = trim($_POST['fmother'] ?? '');
-            $mmother = trim($_POST['mmother'] ?? '');
-            $sfxmother = trim($_POST['sfxmother'] ?? '');
-
-            // Format date fields to ensure they're in YYYY-MM-DD format for DATE type
-            $mbirth = !empty($_POST['mbirth']) ? date('Y-m-d', strtotime($_POST['mbirth'])) : null;
-
-            mysqli_stmt_bind_param($parentsUpdateStmt, "sssssssssi", 
-                $lfather, $ffather, $mfather, $sfxfather, $fbirth,
-                $lmother, $fmother, $mmother, $sfxmother, $mbirth, $applicantId);
-
-            mysqli_stmt_execute($parentsUpdateStmt);
-
-            // Update spouse data if provided
-            if (!empty(trim($_POST['lspouse'] ?? '')) || !empty(trim($_POST['fspouse'] ?? ''))) {
-                $spouseUpdateSql = "UPDATE applicant_spouse SET
-                    lspouse = ?, fspouse = ?, mspouse = ?, sfxspouse = ?, sbirth = ?
-                WHERE applicant_id = ?";
-
-                $spouseUpdateStmt = mysqli_prepare($conn, $spouseUpdateSql);
-
-                // Prepare spouse variables
-                $lspouse = trim($_POST['lspouse'] ?? '');
-                $fspouse = trim($_POST['fspouse'] ?? '');
-                $mspouse = trim($_POST['mspouse'] ?? '');
-                $sfxspouse = trim($_POST['sfxspouse'] ?? '');
-
-                // Format date fields to ensure they're in YYYY-MM-DD format for DATE type
-                $sbirth = !empty($_POST['sbirth']) ? date('Y-m-d', strtotime($_POST['sbirth'])) : null;
-
-                mysqli_stmt_bind_param($spouseUpdateStmt, "sssssi", 
-                    $lspouse, $fspouse, $mspouse, $sfxspouse, $sbirth, $applicantId);
-
-                mysqli_stmt_execute($spouseUpdateStmt);
-            }
-
-            // Update employment data
-            $employmentType = '';
-            if (!empty(trim($_POST['profession'] ?? ''))) $employmentType = 'Self-Employed';
-            elseif (!empty(trim($_POST['faddress'] ?? ''))) $employmentType = 'OFW';
-            elseif (!empty(trim($_POST['spouse-ssnum'] ?? ''))) $employmentType = 'Non-Working Spouse';
-
-            if (!empty($employmentType)) {
-                $employmentUpdateSql = "UPDATE applicant_employment SET
-                    employment_type = ?, profession = ?, ystart = ?, mearning = ?, faddress = ?,
-                    ofw_monthly_earnings = ?, spouse_ssnum = ?, ffprogram = ?, ffp = ?
-                WHERE applicant_id = ?";
-
-                $employmentUpdateStmt = mysqli_prepare($conn, $employmentUpdateSql);
-
-                // Prepare employment variables
-                $profession = trim($_POST['profession'] ?? '');
-                $ystart = trim($_POST['ystart'] ?? '');
-                $mearning = trim($_POST['mearning'] ?? '');
-                $faddress = trim($_POST['faddress'] ?? '');
-                $ofw_monthly_earnings = trim($_POST['ofw_monthly_earnings'] ?? '');
-                $spouse_ssnum = trim($_POST['spouse-ssnum'] ?? '');
-                $ffprogram = trim($_POST['ffprogram'] ?? '');
-                $ffp = trim($_POST['ffp'] ?? '');
-
-                mysqli_stmt_bind_param($employmentUpdateStmt, "sssssssssi", 
-                    $employmentType, $profession, $ystart, $mearning, $faddress,
-                    $ofw_monthly_earnings, $spouse_ssnum, $ffprogram, $ffp, $applicantId);
-
-                mysqli_stmt_execute($employmentUpdateStmt);
-            }
-
-            mysqli_commit($conn);
-            echo json_encode(['success' => true, 'message' => 'Record updated successfully']);
-            exit();
-
-        } catch (Exception $e) {
-            error_log($e->getMessage());
-            mysqli_rollback($conn);
-            echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
-            exit();
-        }
-    } else {
-        echo json_encode(['success' => false, 'message' => implode(', ', $errors)]);
-        exit();
-    }
-} elseif ($_SERVER["REQUEST_METHOD"] == "POST" && $action === 'insert') {
-    $errors = [];
-
-    // Validate required fields
-    $ssnum = trim($_POST['ssnum'] ?? '');
-    if (!validateRequired($ssnum)) {
-        $errors[] = "SS Number is required";
-    }
-
-    $lname = trim($_POST['lname'] ?? '');
-    if (!validateRequired($lname)) {
-        $errors[] = "Last Name is required";
-    }
-
-    $fname = trim($_POST['fname'] ?? '');
-    if (!validateRequired($fname)) {
-        $errors[] = "First Name is required";
-    }
-
-    $dbirth = trim($_POST['dbirth'] ?? '');
-    if (!validateRequired($dbirth)) {
-        $errors[] = "Date of Birth is required";
-    } elseif (!empty($dbirth) && strtotime($dbirth) >= time()) {
-        $errors[] = "Date of Birth must be in the past";
-    }
-
-    if (!validateRequired($_POST['sex'] ?? '')) $errors[] = "Sex is required";
-    if (!validateRequired($_POST['cvstatus'] ?? '')) $errors[] = "Civil Status is required";
-    if (!validateRequired($_POST['nation'] ?? '')) $errors[] = "Nationality is required";
-    if (!validateRequired($_POST['pbirth'] ?? '')) $errors[] = "Place of Birth is required";
-    if (!validateRequired($_POST['address-6'] ?? '')) $errors[] = "Address (City) is required";
-    if (!validateRequired($_POST['address-7'] ?? '')) $errors[] = "Address (Province) is required";
-    if (!validateRequired($_POST['address-9'] ?? '')) $errors[] = "Zip Code is required";
-    if (!validateRequired($_POST['cphone'] ?? '')) $errors[] = "Mobile Number is required";
-
-    $email = trim($_POST['email'] ?? '');
-    if (!validateRequired($email)) {
-        $errors[] = "Email is required";
-    } elseif (!validateEmail($email)) {
-        $errors[] = "Invalid email format";
-    }
-
-    $cphone = trim($_POST['cphone'] ?? '');
-    if (!empty($cphone) && !validatePhone($cphone)) {
-        $errors[] = "Invalid phone number format (must be 09XXXXXXXXX or +639XXXXXXXXX)";
-    }
-
-    // If no errors, process the data
-    if (empty($errors)) {
-        mysqli_begin_transaction($conn);
-        try {
-            // Insert applicant data
-            $applicantSql = "INSERT INTO applicants (
-                ssnum, lname, fname, mname, sfx, dbirth, sex, cvstatus, cvstatus_other,
-                taxid, nation, religion, pbirth, cphone, email, tphone,
-                printed_name, cert_date
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-            $applicantStmt = mysqli_prepare($conn, $applicantSql);
-
-            // Prepare variables for binding
-            $mname = trim($_POST['mname'] ?? '');
-            $sfx = trim($_POST['sfx'] ?? '');
-            $sex = trim($_POST['sex'] ?? '');
-            $cvstatus = trim($_POST['cvstatus'] ?? '');
-            $cvstatus_other = trim($_POST['cvstatus_other'] ?? '');
-            $taxid = trim($_POST['taxid'] ?? '');
-            $nation = trim($_POST['nation'] ?? '');
-            $religion = trim($_POST['religion'] ?? '');
-            $pbirth = trim($_POST['pbirth'] ?? '');
-            $tphone = trim($_POST['tphone'] ?? '');
-            $printed_name = trim($_POST['printed-name'] ?? '');
-
-            // Format date to ensure it's in YYYY-MM-DD format for DATE type
-            $formattedDbirth = date('Y-m-d', strtotime($dbirth));
-
-            // Format date fields to ensure they're in YYYY-MM-DD format for DATE type
-            $formattedCertDate = !empty($_POST['cert-date']) ? date('Y-m-d', strtotime($_POST['cert-date'])) : null;
-
-            // Bind parameters for applicant
-            mysqli_stmt_bind_param($applicantStmt, "ssssssssssssssssss",
-                $ssnum, $lname, $fname, $mname, $sfx, $formattedDbirth, $sex, $cvstatus, $cvstatus_other,
-                $taxid, $nation, $religion, $pbirth, $cphone, $email, $tphone,
-                $printed_name, $formattedCertDate);
-
-            mysqli_stmt_execute($applicantStmt);
-            $applicantId = mysqli_insert_id($conn);
-
-            // Insert address data
-            $addressSql = "INSERT INTO applicant_addresses (
-                applicant_id, address_1, address_2, address_3, address_4, address_5,
-                address_6, address_7, address_8, address_9, same_as_pbirth
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-            $addressStmt = mysqli_prepare($conn, $addressSql);
-
-            // Prepare variables for binding
-            $address_1 = trim($_POST['address-1'] ?? '');
-            $address_2 = trim($_POST['address-2'] ?? '');
-            $address_3 = trim($_POST['address-3'] ?? '');
-            $address_4 = trim($_POST['address-4'] ?? '');
-            $address_5 = trim($_POST['address-5'] ?? '');
-            $address_6 = trim($_POST['address-6'] ?? '');
-            $address_7 = trim($_POST['address-7'] ?? '');
-            $address_8 = trim($_POST['address-8'] ?? '');
-            $address_9 = trim($_POST['address-9'] ?? '');
-            $same_as_pbirth = isset($_POST['same_as_pbirth']) ? 1 : 0;
-
-            mysqli_stmt_bind_param($addressStmt, "isssssssssi",
-                $applicantId, $address_1, $address_2, $address_3, $address_4, $address_5,
-                $address_6, $address_7, $address_8, $address_9, $same_as_pbirth);
-            
-            mysqli_stmt_execute($addressStmt);
-
-            // Insert parents data
-            $parentsSql = "INSERT INTO applicant_parents (
-                applicant_id, lfather, ffather, mfather, sfxfather, fbirth,
-                lmother, fmother, mmother, sfxmother, mbirth
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-            $parentsStmt = mysqli_prepare($conn, $parentsSql);
-
-            // Prepare variables for binding
-            $lfather = trim($_POST['lfather'] ?? '');
-            $ffather = trim($_POST['ffather'] ?? '');
-            $mfather = trim($_POST['mfather'] ?? '');
-            $sfxfather = trim($_POST['sfxfather'] ?? '');
-            $lmother = trim($_POST['lmother'] ?? '');
-            $fmother = trim($_POST['fmother'] ?? '');
-            $mmother = trim($_POST['mmother'] ?? '');
-            $sfxmother = trim($_POST['sfxmother'] ?? '');
-
-            // Format date fields to ensure they're in YYYY-MM-DD format for DATE type
-            $formattedFbirth = !empty($_POST['fbirth']) ? date('Y-m-d', strtotime($_POST['fbirth'])) : null;
-            $formattedMbirth = !empty($_POST['mbirth']) ? date('Y-m-d', strtotime($_POST['mbirth'])) : null;
-
-            mysqli_stmt_bind_param($parentsStmt, "isssssssssi",
-                $applicantId, $lfather, $ffather, $mfather, $sfxfather, $formattedFbirth,
-                $lmother, $fmother, $mmother, $sfxmother, $formattedMbirth);
-
-            mysqli_stmt_execute($parentsStmt);
-
-            // Insert spouse data if provided
-            if (!empty(trim($_POST['lspouse'] ?? '')) || !empty(trim($_POST['fspouse'] ?? ''))) {
-                $spouseSql = "INSERT INTO applicant_spouse (
-                    applicant_id, lspouse, fspouse, mspouse, sfxspouse, sbirth
-                ) VALUES (?, ?, ?, ?, ?, ?)";
-
-                $spouseStmt = mysqli_prepare($conn, $spouseSql);
-
-                // Prepare variables for binding
-                $lspouse = trim($_POST['lspouse'] ?? '');
-                $fspouse = trim($_POST['fspouse'] ?? '');
-                $mspouse = trim($_POST['mspouse'] ?? '');
-                $sfxspouse = trim($_POST['sfxspouse'] ?? '');
-
-                // Format date fields to ensure they're in YYYY-MM-DD format for DATE type
-                $formattedSbirth = !empty($_POST['sbirth']) ? date('Y-m-d', strtotime($_POST['sbirth'])) : null;
-
-                mysqli_stmt_bind_param($spouseStmt, "isssss",
-                    $applicantId, $lspouse, $fspouse, $mspouse, $sfxspouse, $formattedSbirth);
-
-                mysqli_stmt_execute($spouseStmt);
-            }
-
-            // Insert children data
-            if (isset($_POST['children']) && is_array($_POST['children'])) {
-                $childSql = "INSERT INTO applicant_children (
-                    applicant_id, lname, fname, mname, sfx, dbirth
-                ) VALUES (?, ?, ?, ?, ?, ?)";
-
-                $childStmt = mysqli_prepare($conn, $childSql);
-
-                foreach ($_POST['children'] as $child) {
-                    if (!empty($child['lname']) || !empty($child['fname'])) {
-                        // Format child date of birth to ensure it's in YYYY-MM-DD format for DATE type
-                        $formattedChildDbirth = !empty($child['dbirth']) ? date('Y-m-d', strtotime($child['dbirth'])) : null;
-
-                        mysqli_stmt_bind_param($childStmt, "isssss",
-                            $applicantId, $child['lname'], $child['fname'], $child['mname'], $child['sfx'], $formattedChildDbirth);
-
-                        mysqli_stmt_execute($childStmt);
-                    }
-                }
-            }
-
-            // Insert employment data
-            $employmentType = '';
-            if (!empty(trim($_POST['profession'] ?? ''))) $employmentType = 'Self-Employed';
-            elseif (!empty(trim($_POST['faddress'] ?? ''))) $employmentType = 'OFW';
-            elseif (!empty(trim($_POST['spouse-ssnum'] ?? ''))) $employmentType = 'Non-Working Spouse';
-
-            if (!empty($employmentType)) {
-                $employmentSql = "INSERT INTO applicant_employment (
-                    applicant_id, employment_type, profession, ystart, mearning,
-                    faddress, ofw_monthly_earnings, spouse_ssnum, ffprogram, ffp
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-                $employmentStmt = mysqli_prepare($conn, $employmentSql);
-
-                // Prepare variables for binding
-                $profession = trim($_POST['profession'] ?? '');
-                $ystart = trim($_POST['ystart'] ?? '');
-                $mearning = trim($_POST['mearning'] ?? '');
-                $faddress = trim($_POST['faddress'] ?? '');
-                $ofw_monthly_earnings = trim($_POST['ofw_monthly_earnings'] ?? '');
-                $spouse_ssnum = trim($_POST['spouse-ssnum'] ?? '');
-                $ffprogram = trim($_POST['ffprogram'] ?? '');
-                $ffp = trim($_POST['ffp'] ?? '');
-
-                mysqli_stmt_bind_param($employmentStmt, "isssssssss",
-                    $applicantId, $employmentType, $profession, $ystart, $mearning,
-                    $faddress, $ofw_monthly_earnings, $spouse_ssnum, $ffprogram, $ffp);
-                
-                mysqli_stmt_execute($employmentStmt);
-            }
-
-            mysqli_commit($conn);
-            echo "<script>sessionStorage.setItem('formSuccess', 'true'); window.location.href='page1.html';</script>";
-            exit();
-
-        } catch (Exception $e) {
-            error_log($e->getMessage());
-            mysqli_rollback($conn);
-            echo "<script>alert('Database error: " . $e->getMessage() . "'); window.history.back();</script>";
-            exit();
-        }
-    } else {
-        $errorMsg = implode("\\n", $errors);
-        echo "<script>alert('$errorMsg'); window.history.back();</script>";
-        exit();
-    }
-}
 ?>

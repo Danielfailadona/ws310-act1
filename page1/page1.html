@@ -3,12 +3,399 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="page1.css">
+    <title>SSS Personal Record Form</title>
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f8;
+            color: #333;
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: clamp(16px, 3vw, 30px);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #003366;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        p {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        #success-message {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            margin: 20px;
+            border-radius: 4px;
+            text-align: center;
+            border: 1px solid #c3e6cb;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        .top-most {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .ssnum-cont {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ssnum-cont b {
+            font-size: 18px;
+        }
+
+        .fp-box {
+            margin-bottom: 15px;
+        }
+
+        .fp-box p {
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #444;
+            text-align: left;
+        }
+
+        .fp-box input, .fp-box select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .name {
+            margin-bottom: 20px;
+        }
+
+        .name p {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+            text-align: left;
+        }
+
+        .name-cont {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .check-box {
+            margin-bottom: 15px;
+        }
+
+        .check-box p {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #444;
+        }
+
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .options input[type="radio"] {
+            margin-right: 5px;
+        }
+
+        .options span {
+            margin-right: 10px;
+        }
+
+        .long-fp-box {
+            margin-bottom: 15px;
+        }
+
+        .long-fp-box p {
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #444;
+            text-align: left;
+        }
+
+        .long-fp-box input {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .home-adress-cont {
+            margin-bottom: 20px;
+        }
+
+        .home-adress-cont p {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+            text-align: left;
+        }
+
+        .home-adress {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .home-adress-layer2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .check-box-inline {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .check-box-inline input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        .father-cont, .mother-cont, .spouse-cont {
+            margin-bottom: 20px;
+        }
+
+        .father-cont p, .mother-cont p, .spouse-cont p {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+            text-align: left;
+        }
+
+        .father, .mother, .spouse {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .part2 {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .part2 b {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .child-entry {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .child-fields {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .btn-add-child {
+            background-color: #2d68da;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .btn-add-child:hover {
+            background-color: #1d58ca;
+        }
+
+        .part3 {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .part3 b {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .se, .ofw, .nws {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .button-group {
+            margin-top: 10px;
+        }
+
+        .button-group p {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #444;
+        }
+
+        .options {
+            display: flex;
+            gap: 15px;
+        }
+
+        .part4 {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .part4 b {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .part4 p {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .cert-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .signature-area {
+            border: 1px dashed #ccc;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            background-color: #f9f9f9;
+        }
+
+        .part5 {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .part5 b {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .sss-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .sss-area {
+            border: 1px solid #ccc;
+            height: 40px;
+            background-color: #f9f9f9;
+        }
+
+        input[type="submit"], input[type="button"] {
+            background-color: #2d68da;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        input[type="submit"]:hover, input[type="button"]:hover {
+            background-color: #1d58ca;
+        }
+
+        button[type="button"] {
+            background-color: #2d68da;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button[type="button"]:hover {
+            background-color: #1d58ca;
+        }
+
+        @media (max-width: 768px) {
+            .name-cont, .home-adress, .home-adress-layer2, 
+            .father, .mother, .spouse, .child-fields, .cert-row, .sss-row,
+            .se, .ofw, .nws {
+                grid-template-columns: 1fr;
+            }
+            
+            .top-most {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div id="success-message" style="display: none; background: #d4edda; color: #155724; padding: 15px; margin: 20px; border-radius: 4px; text-align: center; border: 1px solid #c3e6cb;">Personal record submitted successfully!</div>
-    <div class="main">
+    <div class="container">
+        <h1>SSS Personal Record Form</h1>
+        <p>Social Security System | Republic of the Philippines</p>
+
+        <div id="success-message" style="display: none; background: #d4edda; color: #155724; padding: 15px; margin: 20px; border-radius: 4px; text-align: center; border: 1px solid #c3e6cb;">Personal record submitted successfully!</div>
+
         <form action="page1.php" method="post">
             <div class="top-most">
                 <div class="ssnum-cont" id="ssnum-cont">
@@ -18,7 +405,7 @@
                         <input type="text" name="ssnum" placeholder="SS Number: ">
                     </div>
                 </div>
-                <button type="button" onclick="window.location.href='../crud/crud.html'">Back</button>
+                <button type="button" onclick="window.location.href='../crud/crud.php'">Back</button>
             </div>
 
             <div class="part1">
@@ -30,17 +417,17 @@
                             <p>Last Name:</p>
                             <input type="text" name="lname" placeholder="Last Name: ">
                         </div>
-                            
+
                         <div class="fp-box" id="fname">
                             <p>First Name:</p>
                             <input type="text" name="fname" placeholder="First Name: ">
                         </div>
-                            
+
                         <div class="fp-box" id="mname">
                             <p>Middle Name:</p>
                             <input type="text" name="mname" placeholder="Middle Name: ">
                         </div>
-                            
+
                         <div class="fp-box" id="sfx">
                             <p>Suffix:</p>
                             <input type="text" name="sfx" placeholder="Suffix: ">
@@ -53,7 +440,7 @@
                     </div>
                 </div>
 
-                
+
 
                 <div class="check-box" id="sex-opt">
                     <p>Sex:</p>
@@ -97,7 +484,7 @@
                             <label for="same-address-checkbox">Same as Home Address</label>
                         </div>
                     </div>
-                    
+
                     <div class="home-adress-cont">
                         <p>Home Address </p>
                         <div class="home-adress">
@@ -110,7 +497,7 @@
                                 <p>(House/Lot & Blk. No.):</p>
                                 <input type="text" name="address-2">
                             </div>
-                            
+
                             <div class="fp-box" id="address-3">
                                 <p>(Street Name):</p>
                                 <input type="text" name="address-3">
@@ -137,12 +524,12 @@
                                 <p>(Province):</p>
                                 <input type="text" name="address-7" id="address-7-input">
                             </div>
-                            
+
                             <div class="fp-box" id="address-8">
                                 <p>(Country):</p>
                                 <input type="text" name="address-8" id="address-8-input">
                             </div>
-                            
+
                             <div class="fp-box" id="address-9">
                                 <p>Zip Code:</p>
                                 <input type="text" name="address-9">
@@ -194,7 +581,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="mother-cont">
                         <p>Mother's Maiden Name</p>
                         <div class="mother">
@@ -289,7 +676,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <button type="button" id="add-child-btn" class="btn-add-child">+ Add Another Child</button>
             </div>
 <!-- /////////////////////////////////////////////////////////////////////////////////// -->
@@ -349,28 +736,28 @@
                 <p>I certify that the information provided in this form are true and correct.</p>
                 <p>(If registrant cannot sign, affix fingerprints in the presence of an SSS personnel.)</p>
                 <p>Registrant is required to affix fingerprints.</p>
-                
+
                 <div class="cert-row">
                     <div class="fp-box" id="printed-name">
                         <p>Printed Name:</p>
                         <input type="text" name="printed-name">
                     </div>
-                    
+
                     <div class="fp-box" id="signature">
                         <p>Signature:</p>
                         <div class="signature-area">Signature Area</div>
                     </div>
-                    
+
                     <div class="fp-box" id="cert-date">
                         <p>Date:</p>
                         <input type="date" name="cert-date">
                     </div>
-                    
+
                     <div class="fp-box" id="thumb-mark">
                         <p>Right Thumb Mark:</p>
                         <div class="signature-area">Thumbprint Area</div>
                     </div>
-                    
+
                     <div class="fp-box" id="index-finger">
                         <p>Right Index Finger:</p>
                         <div class="signature-area">Fingerprint Area</div>
@@ -380,24 +767,24 @@
 <!-- /////////////////////////////////////////////////////////////////////////////////// -->
             <div class="part5">
                 <b>D. For SSS Use Only</b>
-                
+
                 <div class="sss-row">
                     <div class="fp-box" id="alphabet-code">
                         <p>Alphabet Code (For SE):</p>
                         <div class="sss-area"></div>
                     </div>
-                    
+
                     <div class="fp-box" id="working-spouse">
                         <p>Working Spouse's Name (For NWS):</p>
                         <div class="sss-area"></div>
                     </div>
-                    
+
                     <div class="fp-box" id="received-rep">
                         <p>Received By Representative:</p>
                         <div class="sss-area"></div>
                     </div>
                 </div>
-                
+
                 <div class="long-fp-box" id="received-processed">
                     <p>Received & Processed By SSS Branch:</p>
                     <div class="sss-area"></div>
@@ -410,544 +797,651 @@
             <input type="button" value="update" id="update-btn" style="display:none;" onclick="updateRecord()">
         </form>
     </div>
-    
+
+    <script src="../usables/js-usables.js"></script>
     <script>
-        // Check if we're in edit mode (has edit parameter in URL)
-        const urlParams = new URLSearchParams(window.location.search);
-        const editId = urlParams.get('edit');
+        // Initialize the form with default settings
+        initializeForm({
+            successMessageId: 'success-message',
+            textInputSelector: 'input[type="text"]',
+            civilStatusRadioSelector: '.cvstatus-radio',
+            civilStatusInputId: 'cvstatus-other-input',
+            sameAddressCheckboxId: 'same-address-checkbox',
+            pbirthInputId: 'pbirth-input',
+            addressLayerId: 'address-layer2',
+            addressInputIds: ['address-5', 'address-6-input', 'address-7-input', 'address-8-input', 'address-9'],
+            hiddenFieldId: 'same-as-pbirth-hidden',
+            addChildButtonId: 'add-child-btn',
+            childrenContainerId: 'children-container',
+            editParamName: 'edit',
+            submitButtonSelector: 'input[type="submit"]',
+            updateButtonSelector: '#update-btn',
+            apiEndpoint: '../crud/crud-operations/read_single.php',
+            formActionUrl: 'page1.php?action=update',
+            redirectUrl: '../crud/crud.html'
+        });
 
-        if (editId) {
-            // We're in edit mode, hide submit button and show update button
-            document.querySelector('input[type="submit"]').style.display = 'none';
-            document.getElementById('update-btn').style.display = 'inline-block';
+        // Example of using the new database functions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for edit mode
+            const urlParams = new URLSearchParams(window.location.search);
+            const editId = urlParams.get('edit');
+            
+            if (editId) {
+                try {
+                    // Load applicant data for editing with debugging
+                    console.log('Loading applicant data for ID:', editId);
+                    
+                    // Override the loadApplicantData function to add debugging
+                    const originalLoadApplicantData = window.loadApplicantData;
+                    if (originalLoadApplicantData) {
+                        // Temporarily override to add debugging
+                        const debugLoadApplicantData = (id, apiEndpoint) => {
+                            fetch(`${apiEndpoint}?id=${id}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log('Retrieved applicant data:', data);
+                                    
+                                    if (data.error) {
+                                        alert('Error retrieving applicant data: ' + data.error);
+                                        return;
+                                    }
+                                    
+                                    
+                                    // Now populate the form with the data using the original function logic
+                                    populateFormFields(data.applicant, '');
+                                    if (data.address) {
+                                        populateFormFields(data.address, 'address-');
+                                    }
+                                    if (data.parents) {
+                                        populateFormFields(data.parents, '');
+                                    }
+                                    if (data.spouse) {
+                                        populateFormFields(data.spouse, '');
+                                    }
+                                    if (data.children && data.children.length > 0) {
+                                        populateNestedData(data.children, 'children-container', (child, index) => `
+                                            <p>Child ${index + 1}</p>
+                                            <div class="child-fields">
+                                                <div class="fp-box">
+                                                    <p>(Last Name):</p>
+                                                    <input type="text" name="children[${index}][lname]" value="${child.lname || ''}">
+                                                </div>
+                                                <div class="fp-box">
+                                                    <p>(First Name):</p>
+                                                    <input type="text" name="children[${index}][fname]" value="${child.fname || ''}">
+                                                </div>
+                                                <div class="fp-box">
+                                                    <p>(Middle Name):</p>
+                                                    <input type="text" name="children[${index}][mname]" value="${child.mname || ''}">
+                                                </div>
+                                                <div class="fp-box">
+                                                    <p>(Suffix):</p>
+                                                    <input type="text" name="children[${index}][sfx]" value="${child.sfx || ''}">
+                                                </div>
+                                                <div class="fp-box">
+                                                    <p>Date of Birth (MM/DD/YYYY):</p>
+                                                    <input type="date" name="children[${index}][dbirth]" value="${child.dbirth || ''}">
+                                                </div>
+                                            </div>
+                                        `);
+                                    }
+                                    if (data.employment) {
+                                        populateFormFields(data.employment, '');
+                                    }
+                                    
+                                    // Set radio buttons specifically
+                                    if (data.applicant.sex) {
+                                        const sexRadio = document.querySelector(`input[name="sex"][value="${data.applicant.sex}"]`);
+                                        if (sexRadio) sexRadio.checked = true;
+                                    }
+                                    if (data.applicant.cvstatus) {
+                                        const cvstatusRadio = document.querySelector(`input[name="cvstatus"][value="${data.applicant.cvstatus}"]`);
+                                        if (cvstatusRadio) cvstatusRadio.checked = true;
+                                    }
+                                    
+                                    // Set same as place of birth checkbox
+                                    if (data.address && data.address.same_as_pbirth) {
+                                        document.getElementById('same-address-checkbox').checked = true;
+                                        document.getElementById('address-layer2').style.opacity = '0.5';
+                                        document.getElementById('address-layer2').style.pointerEvents = 'none';
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error fetching applicant data:', error);
+                                    alert('Error fetching applicant data: ' + error.message);
+                                });
+                        };
+                        
+                        // Call with properly constructed URL - using direct string concatenation to avoid URL constructor issues
+                        const apiUrl = '../crud/crud.php?action=read_single&id=' + encodeURIComponent(editId);
 
-            // Load the applicant data
-            loadApplicantData(editId);
-        }
+                        // Make direct fetch call with properly formatted URL
+                        fetch(apiUrl)
+                            .then(async response => {
+                                // Check if response is OK before trying to parse JSON
+                                if (!response.ok) {
+                                    const errorText = await response.text();
+                                    console.error('HTTP Error:', response.status, response.statusText);
+                                    console.error('Response text:', errorText);
+                                    throw new Error(`HTTP Error: ${response.status} - ${response.statusText}. Response: ${errorText.substring(0, 200)}...`);
+                                }
+                                
+                                // Check the content type before parsing JSON
+                                const contentType = response.headers.get('content-type');
+                                if (!contentType || !contentType.includes('application/json')) {
+                                    const responseText = await response.text();
+                                    console.error('Non-JSON response received:', responseText.substring(0, 500));
+                                    
+                                    // Check if it's HTML (indicated by DOCTYPE or HTML tags)
+                                    if (responseText.includes('<!DOCTYPE') || responseText.includes('<html') || responseText.includes('<')) {
+                                        // This is likely an error page or PHP error
+                                        throw new Error(`Server returned HTML instead of JSON. This indicates a server error. First 200 chars: ${responseText.substring(0, 200)}...`);
+                                    } else {
+                                        throw new Error(`Server returned non-JSON response (Content-Type: ${contentType}). Response: ${responseText.substring(0, 200)}...`);
+                                    }
+                                }
+                                
+                                return response.json();
+                            })
+                            .then(data => {
+                                console.log('Direct fetch - Retrieved applicant data:', data);
 
-        // Function to load applicant data for editing
-        async function loadApplicantData(id) {
-            try {
-                const response = await fetch('../crud/crud-operations/read_single.php?id=' + id);
-                const data = await response.json();
+                                if (data.error) {
+                                    alert('Error retrieving applicant data: ' + data.error);
+                                    return;
+                                }
 
-                if (data) {
-                    const applicant = data.applicant;
-                    const address = data.address;
-                    const parents = data.parents;
-                    const spouse = data.spouse;
-                    const children = data.children;
-                    const employment = data.employment;
-                    const debugInfo = data.debug_info;
+                                // Show retrieved data in an alert for debugging
 
-                    // Show detailed information about what data was retrieved from each table
-                    if (debugInfo) {
-                        let debugMsg = "Data Retrieved from Database:\n\n";
+                                // Populate form fields manually based on the data structure
+                                if (data.applicant) {
+                                    // Populate main applicant fields - only set if element exists
+                                    const ssnumInput = document.querySelector('input[name="ssnum"]');
+                                    if (ssnumInput) ssnumInput.value = data.applicant.ssnum || '';
+                                    
+                                    const lnameInput = document.querySelector('input[name="lname"]');
+                                    if (lnameInput) lnameInput.value = data.applicant.lname || '';
+                                    
+                                    const fnameInput = document.querySelector('input[name="fname"]');
+                                    if (fnameInput) fnameInput.value = data.applicant.fname || '';
+                                    
+                                    const mnameInput = document.querySelector('input[name="mname"]');
+                                    if (mnameInput) mnameInput.value = data.applicant.mname || '';
+                                    
+                                    const sfxInput = document.querySelector('input[name="sfx"]');
+                                    if (sfxInput) sfxInput.value = data.applicant.sfx || '';
+                                    
+                                    const dbirthInput = document.querySelector('input[name="dbirth"]');
+                                    if (dbirthInput) dbirthInput.value = data.applicant.dbirth || '';
 
-                        // Show main applicant data in the requested format
-                        if (applicant) {
-                            debugMsg += "APPLICANT DATA:\n";
-                            debugMsg += "ssnum: " + (applicant.ssnum || 'N/A') + "\n";
-                            debugMsg += "lname: " + (applicant.lname || 'N/A') + "\n";
-                            debugMsg += "fname: " + (applicant.fname || 'N/A') + "\n";
-                            debugMsg += "mname: " + (applicant.mname || 'N/A') + "\n";
-                            debugMsg += "sfx: " + (applicant.sfx || 'N/A') + "\n";
-                            debugMsg += "dbirth: " + (applicant.dbirth || 'N/A') + "\n";
-                            debugMsg += "sex: " + (applicant.sex || 'N/A') + "\n";
-                            debugMsg += "cvstatus: " + (applicant.cvstatus || 'N/A') + "\n";
-                            debugMsg += "cvstatus_other: " + (applicant.cvstatus_other || 'N/A') + "\n";
-                            debugMsg += "taxid: " + (applicant.taxid || 'N/A') + "\n";
-                            debugMsg += "nation: " + (applicant.nation || 'N/A') + "\n";
-                            debugMsg += "religion: " + (applicant.religion || 'N/A') + "\n";
-                            debugMsg += "pbirth: " + (applicant.pbirth || 'N/A') + "\n";
-                            debugMsg += "cphone: " + (applicant.cphone || 'N/A') + "\n";
-                            debugMsg += "email: " + (applicant.email || 'N/A') + "\n";
-                            debugMsg += "tphone: " + (applicant.tphone || 'N/A') + "\n";
-                            debugMsg += "printed_name: " + (applicant.printed_name || 'N/A') + "\n";
-                            debugMsg += "cert_date: " + (applicant.cert_date || 'N/A') + "\n\n";
-                        } else {
-                            debugMsg += "APPLICANT DATA: No data found\n\n";
-                        }
+                                    // Set sex radio button
+                                    if (data.applicant.sex) {
+                                        const sexRadio = document.querySelector(`input[name="sex"][value="${data.applicant.sex}"]`);
+                                        if (sexRadio) sexRadio.checked = true;
+                                    }
 
-                        // Show address data in the requested format
-                        if (address) {
-                            debugMsg += "ADDRESS DATA:\n";
-                            debugMsg += "address_1: " + (address.address_1 || 'N/A') + "\n";
-                            debugMsg += "address_2: " + (address.address_2 || 'N/A') + "\n";
-                            debugMsg += "address_3: " + (address.address_3 || 'N/A') + "\n";
-                            debugMsg += "address_4: " + (address.address_4 || 'N/A') + "\n";
-                            debugMsg += "address_5: " + (address.address_5 || 'N/A') + "\n";
-                            debugMsg += "address_6: " + (address.address_6 || 'N/A') + "\n";
-                            debugMsg += "address_7: " + (address.address_7 || 'N/A') + "\n";
-                            debugMsg += "address_8: " + (address.address_8 || 'N/A') + "\n";
-                            debugMsg += "address_9: " + (address.address_9 || 'N/A') + "\n";
-                            debugMsg += "same_as_pbirth: " + (address.same_as_pbirth ? 'Yes' : 'No') + "\n\n";
-                        } else {
-                            debugMsg += "ADDRESS DATA: No data found\n\n";
-                        }
+                                    // Set civil status radio button
+                                    if (data.applicant.cvstatus) {
+                                        const cvstatusRadio = document.querySelector(`input[name="cvstatus"][value="${data.applicant.cvstatus}"]`);
+                                        if (cvstatusRadio) cvstatusRadio.checked = true;
+                                    }
 
-                        // Show parents data in the requested format
-                        if (parents) {
-                            debugMsg += "PARENTS DATA:\n";
-                            debugMsg += "lfather: " + (parents.lfather || 'N/A') + "\n";
-                            debugMsg += "ffather: " + (parents.ffather || 'N/A') + "\n";
-                            debugMsg += "mfather: " + (parents.mfather || 'N/A') + "\n";
-                            debugMsg += "sfxfather: " + (parents.sfxfather || 'N/A') + "\n";
-                            debugMsg += "fbirth: " + (parents.fbirth || 'N/A') + "\n";
-                            debugMsg += "lmother: " + (parents.lmother || 'N/A') + "\n";
-                            debugMsg += "fmother: " + (parents.fmother || 'N/A') + "\n";
-                            debugMsg += "mmother: " + (parents.mmother || 'N/A') + "\n";
-                            debugMsg += "sfxmother: " + (parents.sfxmother || 'N/A') + "\n";
-                            debugMsg += "mbirth: " + (parents.mbirth || 'N/A') + "\n\n";
-                        } else {
-                            debugMsg += "PARENTS DATA: No data found\n\n";
-                        }
+                                    // Handle "Others" civil status
+                                    if (data.applicant.cvstatus === 'Others' && data.applicant.cvstatus_other) {
+                                        const cvstatusOtherInput = document.getElementById('cvstatus-other-input');
+                                        if (cvstatusOtherInput) {
+                                            cvstatusOtherInput.value = data.applicant.cvstatus_other;
+                                            cvstatusOtherInput.disabled = false;
+                                        }
+                                    }
 
-                        // Show spouse data in the requested format
-                        if (spouse) {
-                            debugMsg += "SPOUSE DATA:\n";
-                            debugMsg += "lspouse: " + (spouse.lspouse || 'N/A') + "\n";
-                            debugMsg += "fspouse: " + (spouse.fspouse || 'N/A') + "\n";
-                            debugMsg += "mspouse: " + (spouse.mspouse || 'N/A') + "\n";
-                            debugMsg += "sfxspouse: " + (spouse.sfxspouse || 'N/A') + "\n";
-                            debugMsg += "sbirth: " + (spouse.sbirth || 'N/A') + "\n\n";
-                        } else {
-                            debugMsg += "SPOUSE DATA: No data found\n\n";
-                        }
+                                    const taxidInput = document.querySelector('input[name="taxid"]');
+                                    if (taxidInput) taxidInput.value = data.applicant.taxid || '';
+                                    
+                                    const nationInput = document.querySelector('input[name="nation"]');
+                                    if (nationInput) nationInput.value = data.applicant.nation || '';
+                                    
+                                    const religionInput = document.querySelector('input[name="religion"]');
+                                    if (religionInput) religionInput.value = data.applicant.religion || '';
+                                    
+                                    const pbirthInput = document.querySelector('input[name="pbirth"]');
+                                    if (pbirthInput) pbirthInput.value = data.applicant.pbirth || '';
+                                    
+                                    const cphoneInput = document.querySelector('input[name="cphone"]');
+                                    if (cphoneInput) cphoneInput.value = data.applicant.cphone || '';
+                                    
+                                    const emailInput = document.querySelector('input[name="email"]');
+                                    if (emailInput) emailInput.value = data.applicant.email || '';
+                                    
+                                    const tphoneInput = document.querySelector('input[name="tphone"]');
+                                    if (tphoneInput) tphoneInput.value = data.applicant.tphone || '';
+                                    
+                                    const printedNameInput = document.querySelector('input[name="printed-name"]');
+                                    if (printedNameInput) printedNameInput.value = data.applicant.printed_name || '';
+                                    
+                                    if (data.applicant.cert_date) {
+                                        const certDateInput = document.querySelector('input[name="cert-date"]');
+                                        if (certDateInput) certDateInput.value = data.applicant.cert_date;
+                                    }
+                                }
 
-                        // Show children data in the requested format
-                        if (children && children.length > 0) {
-                            debugMsg += "CHILDREN DATA (" + children.length + " found):\n";
-                            children.forEach((child, index) => {
-                                debugMsg += "Child " + (index + 1) + ":\n";
-                                debugMsg += "  lname: " + (child.lname || 'N/A') + "\n";
-                                debugMsg += "  fname: " + (child.fname || 'N/A') + "\n";
-                                debugMsg += "  mname: " + (child.mname || 'N/A') + "\n";
-                                debugMsg += "  sfx: " + (child.sfx || 'N/A') + "\n";
-                                debugMsg += "  dbirth: " + (child.dbirth || 'N/A') + "\n\n";
+                                // Populate address fields if available
+                                if (data.address) {
+                                    const address1Input = document.querySelector('input[name="address-1"]');
+                                    if (address1Input) address1Input.value = data.address.address_1 || '';
+                                    
+                                    const address2Input = document.querySelector('input[name="address-2"]');
+                                    if (address2Input) address2Input.value = data.address.address_2 || '';
+                                    
+                                    const address3Input = document.querySelector('input[name="address-3"]');
+                                    if (address3Input) address3Input.value = data.address.address_3 || '';
+                                    
+                                    const address4Input = document.querySelector('input[name="address-4"]');
+                                    if (address4Input) address4Input.value = data.address.address_4 || '';
+                                    
+                                    const address5Input = document.querySelector('input[name="address-5"]');
+                                    if (address5Input) address5Input.value = data.address.address_5 || '';
+                                    
+                                    const address6Input = document.querySelector('input[name="address-6"]');
+                                    if (address6Input) address6Input.value = data.address.address_6 || '';
+                                    
+                                    const address7Input = document.querySelector('input[name="address-7"]');
+                                    if (address7Input) address7Input.value = data.address.address_7 || '';
+                                    
+                                    const address8Input = document.querySelector('input[name="address-8"]');
+                                    if (address8Input) address8Input.value = data.address.address_8 || '';
+                                    
+                                    const address9Input = document.querySelector('input[name="address-9"]');
+                                    if (address9Input) address9Input.value = data.address.address_9 || '';
+
+                                    // Handle same as place of birth checkbox
+                                    if (data.address.same_as_pbirth) {
+                                        const sameAddressCheckbox = document.getElementById('same-address-checkbox');
+                                        if (sameAddressCheckbox) {
+                                            sameAddressCheckbox.checked = true;
+                                            const addressLayer2 = document.getElementById('address-layer2');
+                                            if (addressLayer2) {
+                                                addressLayer2.style.opacity = '0.5';
+                                                addressLayer2.style.pointerEvents = 'none';
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // Populate parents fields if available
+                                if (data.parents) {
+                                    const lfatherInput = document.querySelector('input[name="lfather"]');
+                                    if (lfatherInput) lfatherInput.value = data.parents.lfather || '';
+                                    
+                                    const ffatherInput = document.querySelector('input[name="ffather"]');
+                                    if (ffatherInput) ffatherInput.value = data.parents.ffather || '';
+                                    
+                                    const mfatherInput = document.querySelector('input[name="mfather"]');
+                                    if (mfatherInput) mfatherInput.value = data.parents.mfather || '';
+                                    
+                                    const sfxfatherInput = document.querySelector('input[name="sfxfather"]');
+                                    if (sfxfatherInput) sfxfatherInput.value = data.parents.sfxfather || '';
+                                    
+                                    if (data.parents.fbirth) {
+                                        const fbirthInput = document.querySelector('input[name="fbirth"]');
+                                        if (fbirthInput) fbirthInput.value = data.parents.fbirth;
+                                    }
+                                    
+                                    const lmotherInput = document.querySelector('input[name="lmother"]');
+                                    if (lmotherInput) lmotherInput.value = data.parents.lmother || '';
+                                    
+                                    const fmotherInput = document.querySelector('input[name="fmother"]');
+                                    if (fmotherInput) fmotherInput.value = data.parents.fmother || '';
+                                    
+                                    const mmotherInput = document.querySelector('input[name="mmother"]');
+                                    if (mmotherInput) mmotherInput.value = data.parents.mmother || '';
+                                    
+                                    const sfxmotherInput = document.querySelector('input[name="sfxmother"]');
+                                    if (sfxmotherInput) sfxmotherInput.value = data.parents.sfxmother || '';
+                                    
+                                    if (data.parents.mbirth) {
+                                        const mbirthInput = document.querySelector('input[name="mbirth"]');
+                                        if (mbirthInput) mbirthInput.value = data.parents.mbirth;
+                                    }
+                                }
+
+                                // Populate spouse fields if available
+                                if (data.spouse) {
+                                    const lspouseInput = document.querySelector('input[name="lspouse"]');
+                                    if (lspouseInput) lspouseInput.value = data.spouse.lspouse || '';
+                                    
+                                    const fspouseInput = document.querySelector('input[name="fspouse"]');
+                                    if (fspouseInput) fspouseInput.value = data.spouse.fspouse || '';
+                                    
+                                    const mspouseInput = document.querySelector('input[name="mspouse"]');
+                                    if (mspouseInput) mspouseInput.value = data.spouse.mspouse || '';
+                                    
+                                    const sfxspouseInput = document.querySelector('input[name="sfxspouse"]');
+                                    if (sfxspouseInput) sfxspouseInput.value = data.spouse.sfxspouse || '';
+                                    
+                                    if (data.spouse.sbirth) {
+                                        const sbirthInput = document.querySelector('input[name="sbirth"]');
+                                        if (sbirthInput) sbirthInput.value = data.spouse.sbirth;
+                                    }
+                                }
+
+                                // Populate children if available
+                                if (data.children && Array.isArray(data.children) && data.children.length > 0) {
+                                    const container = document.getElementById('children-container');
+                                    container.innerHTML = ''; // Clear existing children
+
+                                    data.children.forEach((child, index) => {
+                                        const childDiv = document.createElement('div');
+                                        childDiv.className = 'child-entry';
+                                        childDiv.innerHTML = `
+                                            <p>Child \${index + 1}</p>
+                                            <div class="child-fields">
+                                                <div class="fp-box">
+                                                    <p>(Last Name):</p>
+                                                    <input type="text" name="children[\${index}][lname]" value="\${child.lname || ''}">
+                                                </div>
+                                                <div class="fp-box">
+                                                    <p>(First Name):</p>
+                                                    <input type="text" name="children[\${index}][fname]" value="\${child.fname || ''}">
+                                                </div>
+                                                <div class="fp-box">
+                                                    <p>(Middle Name):</p>
+                                                    <input type="text" name="children[\${index}][mname]" value="\${child.mname || ''}">
+                                                </div>
+                                                <div class="fp-box">
+                                                    <p>(Suffix):</p>
+                                                    <input type="text" name="children[\${index}][sfx]" value="\${child.sfx || ''}">
+                                                </div>
+                                                <div class="fp-box">
+                                                    <p>Date of Birth (MM/DD/YYYY):</p>
+                                                    <input type="date" name="children[\${index}][dbirth]" value="\${child.dbirth || ''}">
+                                                </div>
+                                            </div>
+                                        `;
+                                        container.appendChild(childDiv);
+                                    });
+                                }
+
+                                // Populate employment fields if available
+                                if (data.employment) {
+                                    const professionInput = document.querySelector('input[name="profession"]');
+                                    if (professionInput) professionInput.value = data.employment.profession || '';
+                                    
+                                    const ystartInput = document.querySelector('input[name="ystart"]');
+                                    if (ystartInput) ystartInput.value = data.employment.ystart || '';
+                                    
+                                    const mearningInput = document.querySelector('input[name="mearning"]');
+                                    if (mearningInput) mearningInput.value = data.employment.mearning || '';
+                                    
+                                    const faddressInput = document.querySelector('input[name="faddress"]');
+                                    if (faddressInput) faddressInput.value = data.employment.faddress || '';
+                                    
+                                    const ofwMonthlyEarningsInput = document.querySelector('input[name="ofw_monthly_earnings"]');
+                                    if (ofwMonthlyEarningsInput) ofwMonthlyEarningsInput.value = data.employment.ofw_monthly_earnings || '';
+                                    
+                                    const spouseSsnumInput = document.querySelector('input[name="spouse-ssnum"]');
+                                    if (spouseSsnumInput) spouseSsnumInput.value = data.employment.spouse_ssnum || '';
+                                    
+                                    const ffprogramInput = document.querySelector('input[name="ffprogram"]');
+                                    if (ffprogramInput) ffprogramInput.value = data.employment.ffprogram || '';
+
+                                    // Set flexi-fund program radio button
+                                    if (data.employment.ffp) {
+                                        const ffpRadio = document.querySelector(`input[name="ffp"][value="${data.employment.ffp}"]`);
+                                        if (ffpRadio) ffpRadio.checked = true;
+                                    }
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error fetching applicant data:', error);
+                                
+                                // Create a more detailed error message that can be copied
+                                let errorMessage = 'Error fetching applicant data:\n\n';
+                                errorMessage += 'Error Type: ' + (error.constructor.name || 'Unknown') + '\n';
+                                errorMessage += 'Error Message: ' + (error.message || 'No message') + '\n';
+                                
+                                if (error.message.includes('HTML instead of JSON')) {
+                                    errorMessage += 'Issue: Server returned an HTML error page instead of JSON data.\n';
+                                    errorMessage += 'This usually means there\'s a PHP error on the server.\n';
+                                    errorMessage += 'Check server logs for details.\n';
+                                } else if (error.message.includes('HTTP Error')) {
+                                    errorMessage += 'Issue: HTTP request failed.\n';
+                                } else if (error.message.includes('Unexpected token')) {
+                                    errorMessage += 'Issue: Server returned unexpected data format.\n';
+                                    errorMessage += 'The server may have encountered an error and returned HTML instead of JSON.\n';
+                                } else {
+                                    errorMessage += 'Issue: General error occurred.\n';
+                                }
+                                
+                                errorMessage += '\nTechnical Details:\n';
+                                errorMessage += '- URL called: ' + window.location.pathname + '?action=read_single&id=' + editId + '\n';
+                                errorMessage += '- Request method: GET\n';
+                                errorMessage += '- Expected response: JSON\n';
+                                errorMessage += '- Actual response: May be HTML error page\n\n';
+                                errorMessage += 'To resolve this issue:\n';
+                                errorMessage += '1. Check if the database is properly connected\n';
+                                errorMessage += '2. Verify the applicants table exists\n';
+                                errorMessage += '3. Check PHP error logs\n';
+                                errorMessage += '4. Ensure the API endpoint is working correctly\n\n';
+                                errorMessage += 'Full error: ' + (error.stack || error.message);
+                                
+                                // Create a modal with copyable error message
+                                const errorModal = document.createElement('div');
+                                errorModal.style.position = 'fixed';
+                                errorModal.style.top = '0';
+                                errorModal.style.left = '0';
+                                errorModal.style.width = '100%';
+                                errorModal.style.height = '100%';
+                                errorModal.style.backgroundColor = 'rgba(0,0,0,0.7)';
+                                errorModal.style.zIndex = '9999';
+                                errorModal.style.display = 'flex';
+                                errorModal.style.alignItems = 'center';
+                                errorModal.style.justifyContent = 'center';
+                                
+                                errorModal.innerHTML = `
+                                    <div style="background: white; padding: 20px; border-radius: 8px; width: 80%; max-width: 700px; max-height: 80vh; overflow-y: auto;">
+                                        <h3 style="color: #d32f2f; margin-top: 0;">Error Loading Applicant Data</h3>
+                                        <p>Please copy the error details below and share them for troubleshooting:</p>
+                                        <textarea id="error-details" style="width: 100%; height: 200px; font-family: monospace; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" readonly>${errorMessage}</textarea>
+                                        <div style="margin-top: 15px; text-align: right;">
+                                            <button onclick="this.parentElement.parentElement.parentElement.remove()" style="padding: 8px 16px; margin-right: 10px; background: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer;">Close</button>
+                                            <button onclick="document.getElementById('error-details').select(); document.execCommand('copy')" style="padding: 8px 16px; background: #2196F3; color: white; border: none; border-radius: 4px; cursor: pointer;">Copy Error</button>
+                                        </div>
+                                    </div>
+                                `;
+                                
+                                document.body.appendChild(errorModal);
                             });
-                        } else {
-                            debugMsg += "CHILDREN DATA: No data found\n\n";
-                        }
+                    } else {
+                        // If original function doesn't exist, use direct fetch to main crud.php
+                        fetch(`../crud/crud.php?action=read_single&id=${editId}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log('Direct fetch - Retrieved applicant data:', data);
+                                
+                                if (data.error) {
+                                    alert('Error retrieving applicant data: ' + data.error);
+                                    return;
+                                }
+                                
 
-                        // Show employment data in the requested format
-                        if (employment) {
-                            debugMsg += "EMPLOYMENT DATA:\n";
-                            debugMsg += "employment_type: " + (employment.employment_type || 'N/A') + "\n";
-                            debugMsg += "profession: " + (employment.profession || 'N/A') + "\n";
-                            debugMsg += "ystart: " + (employment.ystart || 'N/A') + "\n";
-                            debugMsg += "mearning: " + (employment.mearning || 'N/A') + "\n";
-                            debugMsg += "faddress: " + (employment.faddress || 'N/A') + "\n";
-                            debugMsg += "ofw_monthly_earnings: " + (employment.ofw_monthly_earnings || 'N/A') + "\n";
-                            debugMsg += "spouse_ssnum: " + (employment.spouse_ssnum || 'N/A') + "\n";
-                            debugMsg += "ffprogram: " + (employment.ffprogram || 'N/A') + "\n";
-                            debugMsg += "ffp: " + (employment.ffp || 'N/A') + "\n\n";
-                        } else {
-                            debugMsg += "EMPLOYMENT DATA: No data found\n\n";
-                        }
-
-                        debugMsg += "Data retrieval completed successfully!";
-                        // alert(debugMsg);
+                                // Populate form fields manually based on the data structure
+                                if (data.applicant) {
+                                    // Populate main applicant fields
+                                    document.querySelector('input[name="ssnum"]').value = data.applicant.ssnum || '';
+                                    document.querySelector('input[name="lname"]').value = data.applicant.lname || '';
+                                    document.querySelector('input[name="fname"]').value = data.applicant.fname || '';
+                                    document.querySelector('input[name="mname"]').value = data.applicant.mname || '';
+                                    document.querySelector('input[name="sfx"]').value = data.applicant.sfx || '';
+                                    document.querySelector('input[name="dbirth"]').value = data.applicant.dbirth || '';
+                                    
+                                    // Set sex radio button
+                                    const sexRadio = document.querySelector(`input[name="sex"][value="${data.applicant.sex}"]`);
+                                    if (sexRadio) sexRadio.checked = true;
+                                    
+                                    // Set civil status radio button
+                                    const cvstatusRadio = document.querySelector(`input[name="cvstatus"][value="${data.applicant.cvstatus}"]`);
+                                    if (cvstatusRadio) cvstatusRadio.checked = true;
+                                    
+                                    // Handle "Others" civil status
+                                    if (data.applicant.cvstatus === 'Others' && data.applicant.cvstatus_other) {
+                                        document.getElementById('cvstatus-other-input').value = data.applicant.cvstatus_other;
+                                        document.getElementById('cvstatus-other-input').disabled = false;
+                                    }
+                                    
+                                    document.querySelector('input[name="taxid"]').value = data.applicant.taxid || '';
+                                    document.querySelector('input[name="nation"]').value = data.applicant.nation || '';
+                                    document.querySelector('input[name="religion"]').value = data.applicant.religion || '';
+                                    document.querySelector('input[name="pbirth"]').value = data.applicant.pbirth || '';
+                                    document.querySelector('input[name="cphone"]').value = data.applicant.cphone || '';
+                                    document.querySelector('input[name="email"]').value = data.applicant.email || '';
+                                    document.querySelector('input[name="tphone"]').value = data.applicant.tphone || '';
+                                    document.querySelector('input[name="printed-name"]').value = data.applicant.printed_name || '';
+                                    if (data.applicant.cert_date) {
+                                        document.querySelector('input[name="cert-date"]').value = data.applicant.cert_date;
+                                    }
+                                }
+                                
+                                // Populate address fields if available
+                                if (data.address) {
+                                    document.querySelector('input[name="address-1"]').value = data.address.address_1 || '';
+                                    document.querySelector('input[name="address-2"]').value = data.address.address_2 || '';
+                                    document.querySelector('input[name="address-3"]').value = data.address.address_3 || '';
+                                    document.querySelector('input[name="address-4"]').value = data.address.address_4 || '';
+                                    document.querySelector('input[name="address-5"]').value = data.address.address_5 || '';
+                                    document.querySelector('input[name="address-6"]').value = data.address.address_6 || '';
+                                    document.querySelector('input[name="address-7"]').value = data.address.address_7 || '';
+                                    document.querySelector('input[name="address-8"]').value = data.address.address_8 || '';
+                                    document.querySelector('input[name="address-9"]').value = data.address.address_9 || '';
+                                    
+                                    // Handle same as place of birth checkbox
+                                    if (data.address.same_as_pbirth) {
+                                        document.getElementById('same-address-checkbox').checked = true;
+                                        document.getElementById('address-layer2').style.opacity = '0.5';
+                                        document.getElementById('address-layer2').style.pointerEvents = 'none';
+                                    }
+                                }
+                                
+                                // Populate parents fields if available
+                                if (data.parents) {
+                                    document.querySelector('input[name="lfather"]').value = data.parents.lfather || '';
+                                    document.querySelector('input[name="ffather"]').value = data.parents.ffather || '';
+                                    document.querySelector('input[name="mfather"]').value = data.parents.mfather || '';
+                                    document.querySelector('input[name="sfxfather"]').value = data.parents.sfxfather || '';
+                                    if (data.parents.fbirth) {
+                                        document.querySelector('input[name="fbirth"]').value = data.parents.fbirth;
+                                    }
+                                    document.querySelector('input[name="lmother"]').value = data.parents.lmother || '';
+                                    document.querySelector('input[name="fmother"]').value = data.parents.fmother || '';
+                                    document.querySelector('input[name="mmother"]').value = data.parents.mmother || '';
+                                    document.querySelector('input[name="sfxmother"]').value = data.parents.sfxmother || '';
+                                    if (data.parents.mbirth) {
+                                        document.querySelector('input[name="mbirth"]').value = data.parents.mbirth;
+                                    }
+                                }
+                                
+                                // Populate spouse fields if available
+                                if (data.spouse) {
+                                    document.querySelector('input[name="lspouse"]').value = data.spouse.lspouse || '';
+                                    document.querySelector('input[name="fspouse"]').value = data.spouse.fspouse || '';
+                                    document.querySelector('input[name="mspouse"]').value = data.spouse.mspouse || '';
+                                    document.querySelector('input[name="sfxspouse"]').value = data.spouse.sfxspouse || '';
+                                    if (data.spouse.sbirth) {
+                                        document.querySelector('input[name="sbirth"]').value = data.spouse.sbirth;
+                                    }
+                                }
+                                
+                                // Populate children if available
+                                if (data.children && Array.isArray(data.children) && data.children.length > 0) {
+                                    const container = document.getElementById('children-container');
+                                    container.innerHTML = ''; // Clear existing children
+                                    
+                                    data.children.forEach((child, index) => {
+                                        const childDiv = document.createElement('div');
+                                        childDiv.className = 'child-entry';
+                                        childDiv.innerHTML = `
+                                            <p>Child ${index + 1}</p>
+                                            <div class="child-fields">
+                                                <div class="fp-box">
+                                                    <p>(Last Name):</p>
+                                                    <input type="text" name="children[${index}][lname]" value="${child.lname || ''}">
+                                                </div>
+                                                <div class="fp-box">
+                                                    <p>(First Name):</p>
+                                                    <input type="text" name="children[${index}][fname]" value="${child.fname || ''}">
+                                                </div>
+                                                <div class="fp-box">
+                                                    <p>(Middle Name):</p>
+                                                    <input type="text" name="children[${index}][mname]" value="${child.mname || ''}">
+                                                </div>
+                                                <div class="fp-box">
+                                                    <p>(Suffix):</p>
+                                                    <input type="text" name="children[${index}][sfx]" value="${child.sfx || ''}">
+                                                </div>
+                                                <div class="fp-box">
+                                                    <p>Date of Birth (MM/DD/YYYY):</p>
+                                                    <input type="date" name="children[${index}][dbirth]" value="${child.dbirth || ''}">
+                                                </div>
+                                            </div>
+                                        `;
+                                        container.appendChild(childDiv);
+                                    });
+                                }
+                                
+                                // Populate employment fields if available
+                                if (data.employment) {
+                                    document.querySelector('input[name="profession"]').value = data.employment.profession || '';
+                                    document.querySelector('input[name="ystart"]').value = data.employment.ystart || '';
+                                    document.querySelector('input[name="mearning"]').value = data.employment.mearning || '';
+                                    document.querySelector('input[name="faddress"]').value = data.employment.faddress || '';
+                                    document.querySelector('input[name="ofw_monthly_earnings"]').value = data.employment.ofw_monthly_earnings || '';
+                                    document.querySelector('input[name="spouse-ssnum"]').value = data.employment.spouse_ssnum || '';
+                                    document.querySelector('input[name="ffprogram"]').value = data.employment.ffprogram || '';
+                                    
+                                    // Set flexi-fund program radio button
+                                    const ffpRadio = document.querySelector(`input[name="ffp"][value="${data.employment.ffp}"]`);
+                                    if (ffpRadio) ffpRadio.checked = true;
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error fetching applicant data:', error);
+                                alert('Error fetching applicant data: ' + error.message);
+                            });
                     }
-
-                    // Show alerts for retrieved data
-                    // if (applicant) {
-                    //     alert("Applicant data retrieved:\n" +
-                    //           "ID: " + (applicant.applicant_id || 'N/A') + "\n" +
-                    //           "Name: " + (applicant.fname || '') + " " + (applicant.lname || '') + "\n" +
-                    //           "SS Number: " + (applicant.ssnum || 'N/A') + "\n" +
-                    //           "Date of Birth: " + (applicant.dbirth || 'N/A') + "\n" +
-                    //           "Sex: " + (applicant.sex || 'N/A') + "\n" +
-                    //           "Civil Status: " + (applicant.cvstatus || 'N/A') + "\n" +
-                    //           "Email: " + (applicant.email || 'N/A') + "\n" +
-                    //           "Phone: " + (applicant.cphone || 'N/A'));
-                    // }
-
-                    // if (address) {
-                    //     alert("Address data retrieved:\n" +
-                    //           "Address Line 1: " + (address.address_1 || 'N/A') + "\n" +
-                    //           "Address Line 2: " + (address.address_2 || 'N/A') + "\n" +
-                    //           "City: " + (address.address_6 || 'N/A') + "\n" +
-                    //           "Province: " + (address.address_7 || 'N/A') + "\n" +
-                    //           "Country: " + (address.address_8 || 'N/A') + "\n" +
-                    //           "ZIP Code: " + (address.address_9 || 'N/A'));
-                    // }
-
-                    // if (parents) {
-                    //     alert("Parent data retrieved:\n" +
-                    //           "Father's Name: " + (parents.lfather || '') + ", " + (parents.ffather || '') + " " + (parents.mfather || '') + "\n" +
-                    //           "Father's Suffix: " + (parents.sfxfather || 'N/A') + "\n" +
-                    //           "Father's Birth: " + (parents.fbirth || 'N/A') + "\n" +
-                    //           "Mother's Name: " + (parents.lmother || '') + ", " + (parents.fmother || '') + " " + (parents.mmother || '') + "\n" +
-                    //           "Mother's Suffix: " + (parents.sfxmother || 'N/A') + "\n" +
-                    //           "Mother's Birth: " + (parents.mbirth || 'N/A'));
-                    // }
-
-                    // if (spouse) {
-                    //     alert("Spouse data retrieved:\n" +
-                    //           "Spouse's Name: " + (spouse.lspouse || '') + ", " + (spouse.fspouse || '') + " " + (spouse.mspouse || '') + "\n" +
-                    //           "Spouse's Suffix: " + (spouse.sfxspouse || 'N/A') + "\n" +
-                    //           "Spouse's Birth: " + (spouse.sbirth || 'N/A'));
-                    // }
-
-                    // if (children && children.length > 0) {
-                    //     let childInfo = "Children data retrieved:\n";
-                    //     children.forEach((child, index) => {
-                    //         childInfo += "Child " + (index + 1) + ": " + (child.fname || '') + " " + (child.lname || '') +
-                    //                      " (DOB: " + (child.dbirth || 'N/A') + ")\n";
-                    //     });
-                    //     alert(childInfo);
-                    // }
-
-                    // if (employment) {
-                    //     alert("Employment data retrieved:\n" +
-                    //           "Profession: " + (employment.profession || 'N/A') + "\n" +
-                    //           "Year Started: " + (employment.ystart || 'N/A') + "\n" +
-                    //           "Monthly Earnings: " + (employment.mearning || 'N/A') + "\n" +
-                    //           "Foreign Address: " + (employment.faddress || 'N/A') + "\n" +
-                    //           "Spouse SS Number: " + (employment.spouse_ssnum || 'N/A'));
-                    // }
-
-                    // Fill the main applicant form with the applicant data
-                    document.getElementById('applicant-id').value = applicant.applicant_id || id;
-                    document.querySelector('input[name="ssnum"]').value = applicant.ssnum || '';
-                    document.querySelector('input[name="lname"]').value = applicant.lname || '';
-                    document.querySelector('input[name="fname"]').value = applicant.fname || '';
-                    document.querySelector('input[name="mname"]').value = applicant.mname || '';
-                    document.querySelector('input[name="sfx"]').value = applicant.sfx || '';
-
-                    // Set date of birth
-                    if (applicant.dbirth) {
-                        document.querySelector('input[name="dbirth"]').value = applicant.dbirth;
-                    }
-
-                    // Set sex radio button
-                    if (applicant.sex) {
-                        const sexRadio = document.querySelector(`input[name="sex"][value="${applicant.sex}"]`);
-                        if (sexRadio) sexRadio.checked = true;
-                    }
-
-                    // Set civil status
-                    if (applicant.cvstatus) {
-                        const cvstatusRadio = document.querySelector(`input[name="cvstatus"][value="${applicant.cvstatus}"]`);
-                        if (cvstatusRadio) cvstatusRadio.checked = true;
-                    }
-
-                    // Set other civil status if applicable
-                    if (applicant.cvstatus_other) {
-                        document.querySelector('input[name="cvstatus_other"]').value = applicant.cvstatus_other;
-                        document.getElementById('cvstatus-other-input').disabled = false;
-                    }
-
-                    // Set other fields - making sure each field goes to the correct input
-                    document.querySelector('input[name="taxid"]').value = applicant.taxid || '';
-                    document.querySelector('input[name="nation"]').value = applicant.nation || '';  // nation field goes to nation input
-                    document.querySelector('input[name="religion"]').value = applicant.religion || '';
-                    document.querySelector('input[name="pbirth"]').value = applicant.pbirth || '';
-                    document.querySelector('input[name="cphone"]').value = applicant.cphone || '';
-                    document.querySelector('input[name="email"]').value = applicant.email || '';
-                    document.querySelector('input[name="tphone"]').value = applicant.tphone || '';
-                    document.querySelector('input[name="printed-name"]').value = applicant.printed_name || '';
-
-                    // Set certification date if exists
-                    if (applicant.cert_date) {
-                        document.querySelector('input[name="cert-date"]').value = applicant.cert_date;
-                    }
-
-                    // Fill address fields if available
-                    if (address) {
-                        document.querySelector('input[name="address-1"]').value = address.address_1 || '';
-                        document.querySelector('input[name="address-2"]').value = address.address_2 || '';
-                        document.querySelector('input[name="address-3"]').value = address.address_3 || '';
-                        document.querySelector('input[name="address-4"]').value = address.address_4 || '';
-                        document.querySelector('input[name="address-5"]').value = address.address_5 || '';
-                        document.querySelector('input[name="address-6"]').value = address.address_6 || '';
-                        document.querySelector('input[name="address-7"]').value = address.address_7 || '';
-                        document.querySelector('input[name="address-8"]').value = address.address_8 || '';
-                        document.querySelector('input[name="address-9"]').value = address.address_9 || '';
-
-                        // Set same as place of birth checkbox
-                        if (address.same_as_pbirth) {
-                            document.getElementById('same-address-checkbox').checked = true;
-                            document.getElementById('address-layer2').style.opacity = '0.5';
-                            document.getElementById('address-layer2').style.pointerEvents = 'none';
-                        }
-                    }
-
-                    // Fill parents fields if available
-                    if (parents) {
-                        document.querySelector('input[name="lfather"]').value = parents.lfather || '';
-                        document.querySelector('input[name="ffather"]').value = parents.ffather || '';
-                        document.querySelector('input[name="mfather"]').value = parents.mfather || '';
-                        document.querySelector('input[name="sfxfather"]').value = parents.sfxfather || '';
-
-                        if (parents.fbirth) {
-                            document.querySelector('input[name="fbirth"]').value = parents.fbirth;
-                        }
-
-                        document.querySelector('input[name="lmother"]').value = parents.lmother || '';
-                        document.querySelector('input[name="fmother"]').value = parents.fmother || '';
-                        document.querySelector('input[name="mmother"]').value = parents.mmother || '';
-                        document.querySelector('input[name="sfxmother"]').value = parents.sfxmother || '';
-
-                        if (parents.mbirth) {
-                            document.querySelector('input[name="mbirth"]').value = parents.mbirth;
-                        }
-                    }
-
-                    // Fill spouse fields if available
-                    if (spouse) {
-                        document.querySelector('input[name="lspouse"]').value = spouse.lspouse || '';
-                        document.querySelector('input[name="fspouse"]').value = spouse.fspouse || '';
-                        document.querySelector('input[name="mspouse"]').value = spouse.mspouse || '';
-                        document.querySelector('input[name="sfxspouse"]').value = spouse.sfxspouse || '';
-
-                        if (spouse.sbirth) {
-                            document.querySelector('input[name="sbirth"]').value = spouse.sbirth;
-                        }
-                    }
-
-                    // Fill children fields if available
-                    if (children && children.length > 0) {
-                        const container = document.getElementById('children-container');
-                        container.innerHTML = ''; // Clear existing children
-
-                        children.forEach((child, index) => {
-                            // Create new child entry
-                            const newChild = document.createElement('div');
-                            newChild.className = 'child-entry';
-                            newChild.setAttribute('data-child-num', index + 1);
-
-                            newChild.innerHTML = `
-                                <p>Child ${index + 1}</p>
-                                <div class="child-fields">
-                                    <div class="fp-box">
-                                        <p>(Last Name):</p>
-                                        <input type="text" name="children[${index}][lname]" value="${child.lname || ''}">
-                                    </div>
-                                    <div class="fp-box">
-                                        <p>(First Name):</p>
-                                        <input type="text" name="children[${index}][fname]" value="${child.fname || ''}">
-                                    </div>
-                                    <div class="fp-box">
-                                        <p>(Middle Name):</p>
-                                        <input type="text" name="children[${index}][mname]" value="${child.mname || ''}">
-                                    </div>
-                                    <div class="fp-box">
-                                        <p>(Suffix):</p>
-                                        <input type="text" name="children[${index}][sfx]" value="${child.sfx || ''}">
-                                    </div>
-                                    <div class="fp-box">
-                                        <p>Date of Birth (MM/DD/YYYY):</p>
-                                        <input type="date" name="children[${index}][dbirth]" value="${child.dbirth || ''}">
-                                    </div>
-                                </div>
-                            `;
-
-                            container.appendChild(newChild);
-                        });
-                    }
-
-                    // Fill employment fields if available
-                    if (employment) {
-                        document.querySelector('input[name="profession"]').value = employment.profession || '';
-                        document.querySelector('input[name="ystart"]').value = employment.ystart || '';
-                        document.querySelector('input[name="mearning"]').value = employment.mearning || '';
-                        document.querySelector('input[name="faddress"]').value = employment.faddress || '';
-
-                        if (employment.ofw_monthly_earnings) {
-                            document.querySelector('input[name="ofw_monthly_earnings"]').value = employment.ofw_monthly_earnings;
-                        }
-
-                        document.querySelector('input[name="spouse-ssnum"]').value = employment.spouse_ssnum || '';
-                        document.querySelector('input[name="ffprogram"]').value = employment.ffprogram || '';
-                        document.querySelector('input[name="ffp"]').value = employment.ffp || '';
-                    }
-
-                } else {
-                    // alert('Applicant not found');
+                } catch (error) {
+                    console.error('Error loading applicant data:', error);
+                    alert('Error loading applicant data: ' + error.message + '. Please check if the record exists and try again.');
                 }
-            } catch (error) {
-                console.error('Error loading applicant data:', error);
-                // alert('Error loading applicant data');
-            }
-        }
-
-        // Show success message if form was submitted
-        if (sessionStorage.getItem('formSuccess') === 'true') {
-            document.getElementById('success-message').style.display = 'block';
-            sessionStorage.removeItem('formSuccess');
-            setTimeout(function() {
-                document.getElementById('success-message').style.display = 'none';
-            }, 5000);
-        }
-
-        // Auto-uppercase text inputs
-        const textInputs = document.querySelectorAll('input[type="text"]');
-        textInputs.forEach(input => {
-            input.addEventListener('input', function() {
-                this.value = this.value.toUpperCase();
-            });
-        });
-
-        // Civil Status Others field toggle
-        const cvstatusRadios = document.querySelectorAll('.cvstatus-radio');
-        const cvstatusOtherInput = document.getElementById('cvstatus-other-input');
-
-        cvstatusRadios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                if (this.id === 'cvstatus-others' && this.checked) {
-                    cvstatusOtherInput.disabled = false;
-                    cvstatusOtherInput.focus();
-                } else {
-                    cvstatusOtherInput.disabled = true;
-                    cvstatusOtherInput.value = '';
-                }
-            });
-        });
-
-        // Same as Home Address functionality
-        const sameAddressCheckbox = document.getElementById('same-address-checkbox');
-        const pbirthInput = document.getElementById('pbirth-input');
-        const addressLayer2 = document.getElementById('address-layer2');
-        const address5Input = document.getElementById('address-5'); // Barangay
-        const address6Input = document.getElementById('address-6-input'); // City
-        const address7Input = document.getElementById('address-7-input'); // Province
-        const address8Input = document.getElementById('address-8-input'); // Country
-        const address9Input = document.getElementById('address-9'); // Zip Code
-
-        sameAddressCheckbox.addEventListener('change', function() {
-            if (this.checked) {
-                addressLayer2.style.opacity = '0.5';
-                addressLayer2.style.pointerEvents = 'none';
-
-                const pbirth = pbirthInput.value;
-                if (pbirth) {
-                    const parts = pbirth.split(',').map(part => part.trim());
-
-                    // Extract parts: [barangay, city, province, country, zip] or similar
-                    if (parts.length >= 1) {
-                        address5Input.value = parts[0] || '';
-                    }
-                    if (parts.length >= 2) {
-                        address6Input.value = parts[1] || '';
-                    }
-                    if (parts.length >= 3) {
-                        address7Input.value = parts[2] || '';
-                    }
-                    if (parts.length >= 4) {
-                        address8Input.value = parts[3] || 'PHILIPPINES'; // Default to PHILIPPINES if not specified
-                    }
-                    if (parts.length >= 5) {
-                        address9Input.value = parts[4] || '';
-                    }
-                }
-
-                // Update hidden field to indicate address is same as place of birth
-                document.getElementById('same-as-pbirth-hidden').value = '1';
-            } else {
-                addressLayer2.style.opacity = '1';
-                addressLayer2.style.pointerEvents = 'auto';
-
-                // Clear all address fields when unchecked
-                address5Input.value = '';
-                address6Input.value = '';
-                address7Input.value = '';
-                address8Input.value = 'PHILIPPINES'; // Reset to default
-                address9Input.value = '';
-
-                // Update hidden field to indicate address is NOT same as place of birth
-                document.getElementById('same-as-pbirth-hidden').value = '0';
-            }
-        });
-
-        pbirthInput.addEventListener('input', function() {
-            if (sameAddressCheckbox.checked) {
-                const pbirth = this.value;
-                const parts = pbirth.split(',').map(part => part.trim());
-
-                // Update address fields in real-time as user types
-                if (parts.length >= 1) {
-                    address5Input.value = parts[0] || '';
-                }
-                if (parts.length >= 2) {
-                    address6Input.value = parts[1] || '';
-                }
-                if (parts.length >= 3) {
-                    address7Input.value = parts[2] || '';
-                }
-                if (parts.length >= 4) {
-                    address8Input.value = parts[3] || 'PHILIPPINES';
-                }
-                if (parts.length >= 5) {
-                    address9Input.value = parts[4] || '';
+                
+                // Show update button and hide submit button
+                const submitButton = document.querySelector('input[type="submit"]');
+                const updateButton = document.getElementById('update-btn');
+                
+                if (submitButton) submitButton.style.display = 'none';
+                if (updateButton) updateButton.style.display = 'inline-block';
+                
+                // Set form action for update
+                const form = document.querySelector('form');
+                if (form) {
+                    form.action = 'page1.php?action=update';
                 }
             }
-        });
-
-        // Add child functionality
-        let childCount = 1;
-
-        document.getElementById('add-child-btn').addEventListener('click', function() {
-            const container = document.getElementById('children-container');
-            const newChild = document.createElement('div');
-            newChild.className = 'child-entry';
-            newChild.setAttribute('data-child-num', childCount + 1);
-
-            newChild.innerHTML = `
-                <p>Child ${childCount + 1}</p>
-                <div class="child-fields">
-                    <div class="fp-box">
-                        <p>(Last Name):</p>
-                        <input type="text" name="children[${childCount}][lname]">
-                    </div>
-                    <div class="fp-box">
-                        <p>(First Name):</p>
-                        <input type="text" name="children[${childCount}][fname]">
-                    </div>
-                    <div class="fp-box">
-                        <p>(Middle Name):</p>
-                        <input type="text" name="children[${childCount}][mname]">
-                    </div>
-                    <div class="fp-box">
-                        <p>(Suffix):</p>
-                        <input type="text" name="children[${childCount}][sfx]">
-                    </div>
-                    <div class="fp-box">
-                        <p>Date of Birth (MM/DD/YYYY):</p>
-                        <input type="date" name="children[${childCount}][dbirth]">
-                    </div>
-                </div>
-            `;
-
-            container.appendChild(newChild);
-            childCount++;
-        });
-
-
-        // Function to handle the update operation
-        async function updateRecord() {
-            const formData = new FormData(document.querySelector('form'));
-
-            try {
-                const response = await fetch('page1.php?action=update', {
-                    method: 'POST',
-                    body: formData
+            
+            // Add error handling for form submission
+            const form = document.querySelector('form');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    try {
+                        // Form validation can be added here if needed
+                        // The form will submit normally, but errors will be handled server-side
+                    } catch (error) {
+                        console.error('Form submission error:', error);
+                        alert('Error submitting form: ' + error.message);
+                    }
                 });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    // alert('Record updated successfully');
-                    window.location.href = '../crud/crud.html'; // Redirect back to CRUD page
-                } else {
-                    // alert('Error updating record: ' + result.message);
-                }
-            } catch (error) {
-                console.error('Error updating record:', error);
-                // alert('Error updating record');
             }
-        }
+        });
     </script>
 </body>
 </html>

@@ -120,7 +120,7 @@ document.getElementById('myInput').focus();
 #### Event Handling
 **Syntax**: `addEventListener('click', function() { })`
 
-**Explanation**: 
+**Explanation**:
 - `addEventListener()` = Method to attach event handlers to elements
 - `'click'` = Event type to listen for
 - `function() { }` = Anonymous function to execute when event occurs
@@ -138,7 +138,7 @@ document.getElementById('myButton').addEventListener('click', function() {
 
 **Syntax**: `addEventListener('change', function() { })`
 
-**Explanation**: 
+**Explanation**:
 - `'change'` = Event type for when input value changes
 - `addEventListener('change', function() { })` = Runs code when input value changes
 
@@ -154,7 +154,7 @@ document.getElementById('mySelect').addEventListener('change', function() {
 
 **Syntax**: `addEventListener('input', function() { })`
 
-**Explanation**: 
+**Explanation**:
 - `'input'` = Event type for when user types in an input
 - `addEventListener('input', function() { })` = Runs code as user types
 
@@ -170,7 +170,7 @@ document.getElementById('myInput').addEventListener('input', function() {
 
 **Syntax**: `addEventListener('change', function() { })`
 
-**Explanation**: 
+**Explanation**:
 - `'change'` = Event type for when input value changes
 - `addEventListener('change', function() { })` = Runs code when input value changes
 
@@ -187,7 +187,7 @@ document.getElementById('mySelect').addEventListener('change', function() {
 #### String Methods
 **Syntax**: `.split(',')`
 
-**Explanation**: 
+**Explanation**:
 - `.split()` = Method that splits a string into an array
 - `','` = Delimiter character to split on
 - `.split(',')` = Splits string at commas into array elements
@@ -454,6 +454,122 @@ document.getElementById('myDiv').outerHTML = '<span>New element</span>';
 ===================================================================================================
 
 ```
+Syntax: new URLSearchParams()
+```
+**Explanation**:
+- `URLSearchParams` = Interface for working with URL query strings
+- `new URLSearchParams()` = Creates a new URLSearchParams object
+- Used to manipulate and access query parameters in URLs
+
+**Example**:
+```javascript
+const params = new URLSearchParams();
+params.append('key', 'value');
+params.append('another', 'data');
+
+// Or from a query string
+const params2 = new URLSearchParams('key=value&another=data');
+
+// Get parameter value
+const value = params.get('key'); // Returns 'value'
+```
+
+===================================================================================================
+
+```
+Syntax: window.location.href
+```
+**Explanation**:
+- `window.location` = Object containing information about the current URL
+- `.href` = Property that gets or sets the entire URL
+- `window.location.href` = Gets or sets the complete URL of the current page
+
+**Example**:
+```javascript
+// Get current URL
+const currentUrl = window.location.href;
+
+// Redirect to another page
+window.location.href = 'https://example.com';
+
+// Redirect to another page in the same site
+window.location.href = '../page1/page1.html';
+```
+
+===================================================================================================
+
+```
+Syntax: URLSearchParams.get()
+```
+**Explanation**:
+- `.get()` = Method to retrieve the value of a specific parameter
+- `URLSearchParams.get('paramName')` = Returns the value of the specified parameter
+
+**Example**:
+```javascript
+const urlParams = new URLSearchParams(window.location.search);
+const editId = urlParams.get('edit'); // Gets the value of the 'edit' parameter
+if (editId) {
+    // Handle edit mode
+}
+```
+
+===================================================================================================
+
+```
+Syntax: encodeURIComponent()
+```
+**Explanation**:
+- `encodeURIComponent()` = Function that encodes a URI component
+- Encodes special characters in a string to be used safely in a URI
+- Prevents issues with special characters in URLs
+
+**Example**:
+```javascript
+const id = '123';
+const url = '../page1/page1.html?edit=' + encodeURIComponent(id);
+// Safely encodes the ID parameter
+```
+
+===================================================================================================
+
+```
+Syntax: Element.querySelector()
+```
+**Explanation**:
+- `.querySelector()` = Method that returns the first element matching a CSS selector
+- `element.querySelector('selector')` = Finds the first element that matches the selector
+
+**Example**:
+```javascript
+const submitButton = document.querySelector('input[type="submit"]');
+const updateButton = document.getElementById('update-btn');
+const form = document.querySelector('form');
+```
+
+===================================================================================================
+
+```
+Syntax: Element.style.display
+```
+**Explanation**:
+- `.style.display` = Property that controls the display behavior of an element
+- Used to show or hide elements programmatically
+
+**Example**:
+```javascript
+const submitButton = document.querySelector('input[type="submit"]');
+const updateButton = document.getElementById('update-btn');
+
+if (mode === 'edit') {
+    submitButton.style.display = 'none';      // Hide submit button
+    updateButton.style.display = 'inline-block'; // Show update button
+}
+```
+
+===================================================================================================
+
+```
 Syntax: .textContent = 'text'
 ```
 **Explanation**:
@@ -663,6 +779,68 @@ let values = Object.values(person);
 
 ## HTML Syntax Used (page1.html)
 
+### Combined HTML and CSS Approach
+**Syntax**:
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Title</title>
+    
+    <style>
+        /* CSS styles embedded directly in HTML */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f4f6f8;
+            color: #333;
+            line-height: 1.5;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: clamp(16px, 3vw, 30px);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+```
+
+**Explanation**: Combines HTML and CSS in a single file using embedded styles in the `<head>` section.
+- `<style>` tag contains all CSS rules
+- Eliminates need for separate CSS files
+- Follows responsive design principles
+- Uses CSS variables for consistent theming
+
+**Example**:
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Combined HTML/CSS Example</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { max-width: 800px; margin: 0 auto; }
+    </style>
+</head>
+<body>
+    <div class="container">Content here</div>
+</body>
+</html>
+```
+
 ### Custom Data Attributes
 **Syntax**:
 ```html
@@ -693,7 +871,7 @@ const processedId = element.getAttribute('fdprocessedid');  // Returns "no205y"
 ===================================================================================================
 
 ### Form Structure
-**Syntax**: 
+**Syntax**:
 ```html
 <form action="page1.php" method="post">
     <!-- Form fields here -->
@@ -716,7 +894,7 @@ const processedId = element.getAttribute('fdprocessedid');  // Returns "no205y"
 ===================================================================================================
 
 ### Input Types
-**Syntax**: 
+**Syntax**:
 ```html
 <!-- Text Input -->
 <input type="text" name="lname" placeholder="Last Name">
@@ -735,7 +913,7 @@ const processedId = element.getAttribute('fdprocessedid');  // Returns "no205y"
 <input type="radio" name="sex" value="Female"> Female
 ```
 
-**Explanation**: 
+**Explanation**:
 - `name="fieldname"` - Used to get value in PHP: `$_POST['fieldname']`
 - `placeholder="text"` - Shows hint text inside input
 - `type="email"` - Auto-validates email before submit
@@ -818,7 +996,7 @@ container.appendChild(newChildDiv);
 ===================================================================================================
 
 ### Disabled Attribute
-**Syntax**: 
+**Syntax**:
 ```html
 <input type="text" name="cvstatus_other" disabled>
 ```
@@ -837,7 +1015,7 @@ container.appendChild(newChildDiv);
 ===================================================================================================
 
 ### Hidden Input Fields
-**Syntax**: 
+**Syntax**:
 ```html
 <input type="hidden" name="same_as_pbirth" id="same-as-pbirth-hidden" value="0">
 ```
@@ -929,7 +1107,38 @@ container.appendChild(newChildDiv);
 
 ===================================================================================================
 
-## CSS Syntax Used (page1.css)
+## CSS Syntax Used (page1.css - now embedded in HTML)
+
+### CSS Variables
+**Syntax**: 
+```css
+:root {
+    --primary-blue: #2d68da;
+    --bg-light-blue: #f7f9fc;
+    --border-light: #e4e9f0;
+    --text-grey: #4a5568;
+    --input-border: #edf2f7;
+}
+```
+
+**Explanation**: Defines custom CSS properties that can be reused throughout the stylesheet.
+- `:root` - Selector for the highest-level element in the document
+- `--variable-name` - Custom property name
+- `var(--variable-name)` - Function to use the custom property
+
+**Example**:
+```css
+:root {
+    --main-color: #3498db;
+}
+.button {
+    background-color: var(--main-color);
+}
+```
+
+===================================================================================================
+
+## CSS Syntax Used (crud.css - now embedded in HTML)
 
 ### CSS Variables
 **Syntax**: 
@@ -961,7 +1170,7 @@ container.appendChild(newChildDiv);
 ===================================================================================================
 
 ### Flexbox Layout
-**Syntax**: 
+**Syntax**:
 ```css
 .name-cont {
     display: flex;
@@ -990,7 +1199,7 @@ container.appendChild(newChildDiv);
 ===================================================================================================
 
 ### Box Sizing
-**Syntax**: 
+**Syntax**:
 ```css
 * {
     box-sizing: border-box;
@@ -1000,7 +1209,7 @@ container.appendChild(newChildDiv);
 **Explanation**: Includes padding and border in element's total width/height.
 - Put at top of CSS file
 - `*` means apply to all elements
-- Makes width calculations easier (width includes padding)
+- `box-sizing: border-box` - Makes width calculations easier (width includes padding)
 
 **Example**:
 ```css
@@ -1015,7 +1224,7 @@ container.appendChild(newChildDiv);
 ===================================================================================================
 
 ### Hover Effects
-**Syntax**: 
+**Syntax**:
 ```css
 input[type="submit"]:hover {
     background-color: #1e4eb8;
@@ -1038,7 +1247,7 @@ input[type="submit"]:hover {
 ===================================================================================================
 
 ### CSS Opacity and Pointer Events
-**Syntax**: 
+**Syntax**:
 ```css
 .disabled-section {
     opacity: 0.5;              /* Makes element semi-transparent */
@@ -1046,7 +1255,7 @@ input[type="submit"]:hover {
 }
 ```
 
-**Explanation**: 
+**Explanation**:
 - `opacity: 0.5` - 50% transparent (0 = invisible, 1 = solid)
 - `pointer-events: none` - Can't click, type, or interact
 - Use together to show "disabled" state
@@ -1143,7 +1352,7 @@ tr:nth-child(even) {
 ## JavaScript Syntax Used (page1.html)
 
 ### Event Listeners
-**Syntax**: 
+**Syntax**:
 ```javascript
 document.getElementById('add-child-btn').addEventListener('click', function() {
     // Code here
@@ -1165,7 +1374,7 @@ document.getElementById('myButton').addEventListener('click', function() {
 ===================================================================================================
 
 ### DOM Manipulation
-**Syntax**: 
+**Syntax**:
 ```javascript
 // Select element
 const element = document.getElementById('myId');
@@ -1183,7 +1392,7 @@ newDiv.innerHTML = `<p>Child ${count}</p>`;
 container.appendChild(newDiv);
 ```
 
-**Explanation**: 
+**Explanation**:
 - Select by ID: `getElementById('id')` - Gets one element
 - Select by class: `querySelectorAll('.class')` - Gets all matching
 - Create: `createElement('div')` - Makes new element
@@ -1232,7 +1441,7 @@ let childrenInputs = document.querySelectorAll('input[name^="children"]');  // A
 ===================================================================================================
 
 ### Enable/Disable Input
-**Syntax**: 
+**Syntax**:
 ```javascript
 input.disabled = false;  // Enable
 input.disabled = true;   // Disable
@@ -1240,7 +1449,7 @@ input.value = '';        // Clear value
 input.focus();           // Focus on input
 ```
 
-**Explanation**: 
+**Explanation**:
 - Get input: `const input = document.getElementById('myInput')`
 - Enable: `input.disabled = false`
 - Disable: `input.disabled = true`
@@ -1257,7 +1466,7 @@ myInput.value = '';       // Clear its value
 ===================================================================================================
 
 ### String Manipulation
-**Syntax**: 
+**Syntax**:
 ```javascript
 const text = "Manila, Metro Manila, Philippines";
 const parts = text.split(',');  // Split by comma
@@ -1267,7 +1476,7 @@ const cleaned = parts.map(part => part.trim());  // Remove spaces
 // cleaned = ["Manila", "Metro Manila", "Philippines"]
 ```
 
-**Explanation**: 
+**Explanation**:
 - `split(',')` - Splits string into array by comma
 - `map()` - Applies function to each array item
 - `trim()` - Removes spaces from start/end
@@ -1284,7 +1493,7 @@ let cleanParts = addressParts.map(part => part.trim());
 ===================================================================================================
 
 ### Template Literals
-**Syntax**: 
+**Syntax**:
 ```javascript
 const html = `
     <p>Child ${childCount + 1}</p>
@@ -1878,1119 +2087,5 @@ async function postData(data) {
     try {
         const response = await fetch('api.php?action=create', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
-        return await response.json();
-    } catch (error) {
-        console.error('Error posting data:', error);
-        return { success: false, message: error.message };
-    }
-}
+            headers:
 ```
-
-**Explanation**:
-- `async function` - Defines an asynchronous function
-- `await` - Pauses execution until promise resolves
-- `fetch()` - Modern way to make HTTP requests
-- `response.json()` - Parses JSON response
-- `try/catch` - Handles errors in async functions
-- Returns promises that can be awaited
-
-**Example**:
-```javascript
-// Using the async function
-const applicants = await loadData();
-console.log(applicants);  // Will contain the loaded data
-```
-
-===================================================================================================
-
-### FormData for Form Submissions
-**Syntax**:
-```javascript
-// Create FormData from form element
-const formElement = document.querySelector('form');
-const formData = new FormData(formElement);
-
-// Create FormData manually
-const formData = new FormData();
-formData.append('fieldName', 'fieldValue');
-formData.append('anotherField', 'anotherValue');
-
-// Submit form data with fetch
-async function submitForm() {
-    const form = document.getElementById('myForm');
-    const formData = new FormData(form);
-
-    try {
-        const response = await fetch('process.php', {
-            method: 'POST',
-            body: formData
-        });
-        const result = await response.json();
-        return result;
-    } catch (error) {
-        console.error('Error submitting form:', error);
-        return { success: false, message: error.message };
-    }
-}
-```
-
-**Explanation**:
-- `new FormData()` - Creates a FormData object
-- `.append('name', 'value')` - Adds field to FormData
-- `new FormData(formElement)` - Creates FormData from all inputs in form
-- Automatically handles file uploads
-- No need to manually set Content-Type header
-
-**Example**:
-```javascript
-const form = document.forms['myForm'];
-const data = new FormData(form);
-// Contains all form field values
-```
-
-===================================================================================================
-
-### String Methods
-**Syntax**:
-```javascript
-// Convert to uppercase
-const upper = text.toUpperCase();
-
-// Convert to lowercase
-const lower = text.toLowerCase();
-
-// Trim whitespace
-const trimmed = text.trim();
-
-// Split string into array
-const parts = text.split(',');
-
-// Replace parts of string
-const newText = text.replace('old', 'new');
-
-// Check if string contains substring
-const contains = text.includes('substring');
-
-// Get part of string
-const sub = text.substring(0, 5);  // First 5 characters
-const slice = text.slice(-3);     // Last 3 characters
-```
-
-**Explanation**:
-- `.toUpperCase()` - Converts string to uppercase
-- `.toLowerCase()` - Converts string to lowercase
-- `.trim()` - Removes whitespace from start/end
-- `.split('delimiter')` - Splits string into array
-- `.replace('old', 'new')` - Replaces first occurrence
-- `.includes('substring')` - Checks if string contains substring
-- `.substring(start, end)` - Gets part of string
-- `.slice(start, end)` - Gets part of string (supports negative indices)
-
-**Example**:
-```javascript
-const name = "  john doe  ";
-const cleanName = name.trim().toUpperCase();  // "JOHN DOE"
-const parts = "apple,banana,orange".split(',');  // ["apple", "banana", "orange"]
-```
-
-===================================================================================================
-
-### Array Methods
-**Syntax**:
-```javascript
-// Find element in array
-const found = array.find(element => element.id === 123);
-
-// Find index of element
-const index = array.findIndex(element => element.name === 'target');
-
-// Check if array contains element
-const exists = array.some(element => element.active === true);
-
-// Check if all elements meet condition
-const allValid = array.every(element => element.valid === true);
-
-// Reduce array to single value
-const sum = numbers.reduce((total, num) => total + num, 0);
-
-// Sort array
-const sorted = array.sort((a, b) => a.name.localeCompare(b.name));
-const sortedNum = numbers.sort((a, b) => a - b);
-```
-
-**Explanation**:
-- `.find()` - Returns first element that matches condition
-- `.findIndex()` - Returns index of first matching element
-- `.some()` - Returns true if any element matches condition
-- `.every()` - Returns true if all elements match condition
-- `.reduce()` - Combines array elements into single value
-- `.sort()` - Sorts array elements (with comparison function)
-
-**Example**:
-```javascript
-const users = [{id: 1, name: 'John'}, {id: 2, name: 'Jane'}];
-const user = users.find(u => u.id === 1);  // {id: 1, name: 'John'}
-const hasActive = users.some(u => u.active);  // false (assuming no active property)
-```
-
-===================================================================================================
-
-## PHP Syntax Used (page1.php)
-
-### Database Connection (PDO)
-```
-Syntax: $conn = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-```
-**Explanation**:
-- Set variables: `$host = 'localhost'; $dbname = 'mydb';`
-- Create connection: `new PDO("mysql:host=$host;dbname=$dbname", $user, $pass)`
-- Set error mode to show errors
-- Wrap in try-catch to handle connection errors
-
-**Example**:
-```php
-$connection = new PDO("mysql:host=localhost;dbname=mydb", "root", "");
-$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-```
-
-===================================================================================================
-
-```
-Syntax: function validateRequired($value) {
-    return !empty(trim($value));
-}
-```
-**Explanation**:
-- Define: `function functionName($param) { return $result; }`
-- Call: `$result = functionName($value);`
-- Can return true/false, strings, arrays, etc.
-
-**Example**:
-```php
-function addNumbers($a, $b) {
-    return $a + $b;
-}
-$result = addNumbers(5, 3);  // $result = 8
-```
-
-===================================================================================================
-
-```
-Syntax: $lname = trim($_POST['lname'] ?? '');
-```
-
-**Explanation**: If `$_POST['lname']` doesn't exist, use empty string.
-- `$var = $value ?? 'default';`
-- If `$value` exists, use it; otherwise use 'default'
-- Prevents "undefined index" errors
-
-**Example**:
-```php
-$username = $_POST['username'] ?? 'guest';
-// If $_POST['username'] exists, use it; otherwise use 'guest'
-```
-
-===================================================================================================
-
-```
-Syntax: $result = $value ?? $anotherValue ?? 'default';
-```
-
-**Explanation**: Null coalescing operator chaining.
-- Evaluates from left to right
-- Returns the first operand that exists and is not null
-- Useful for providing multiple fallback values
-
-**Example**:
-```php
-$id = $_GET['id'] ?? $_POST['id'] ?? 'default_id';
-// Uses GET id if available, then POST id, then defaults to 'default_id'
-```
-
-===================================================================================================
-
-### Null Coalescing Assignment Operator
-```
-Syntax: $variable ??= 'default_value';
-```
-
-**Explanation**:
-- `$variable ??=` - Null coalescing assignment operator
-- `'default_value'` - Value to assign if variable is null
-- `$variable ??= 'default_value'` - Assigns default value only if variable is null
-
-**Example**:
-```php
-$options = [];
-$options['timezone'] ??= 'UTC';  // Sets timezone to UTC if not already set
-$options['language'] ??= 'en';   // Sets language to 'en' if not already set
-```
-
-===================================================================================================
-
-### Superglobals
-```
-Syntax: $_POST['field_name']
-```
-
-**Explanation**:
-- `$_POST` - Superglobal array containing data from POST requests
-- `['field_name']` - Accesses value by field name
-- `$_POST['field_name']` - Gets value from POST data with specified field name
-
-**Example**:
-```php
-$username = $_POST['username'] ?? '';
-$password = $_POST['password'] ?? '';
-// Gets values from POST data, defaults to empty string if not set
-```
-
-===================================================================================================
-
-### Ternary Operator
-```
-Syntax: $result = condition ? value_if_true : value_if_false;
-```
-
-**Explanation**:
-- `condition` - Expression that evaluates to true or false
-- `?` - Ternary operator symbol
-- `value_if_true` - Value assigned if condition is true
-- `:` - Separator between true and false values
-- `value_if_false` - Value assigned if condition is false
-
-**Example**:
-```php
-$status = $isActive ? 'Active' : 'Inactive';
-// If $isActive is true, $status = 'Active', otherwise $status = 'Inactive'
-```
-
-===================================================================================================
-
-### Array Functions
-```
-Syntax: $array = [];
-```
-
-**Explanation**:
-- `$array` - Variable to hold array
-- `[]` - Array constructor
-- `$array = []` - Creates empty array
-
-**Example**:
-```php
-$names = [];  // Empty array
-$numbers = [1, 2, 3];  // Array with values
-$assoc = ['name' => 'John', 'age' => 30];  // Associative array
-```
-
-===================================================================================================
-
-```
-Syntax: $value = $array['key'] ?? 'default';
-```
-
-**Explanation**:
-- `$array['key']` - Gets value from associative array
-- `?? 'default'` - Provides default value if key doesn't exist
-- `$array['key'] ?? 'default'` - Gets value or default if key is missing
-
-**Example**:
-```php
-$data = ['name' => 'John'];
-$name = $data['name'] ?? 'Anonymous';  // 'John'
-$age = $data['age'] ?? 0;             // 0 (default since age doesn't exist)
-```
-
-===================================================================================================
-
-### Prepared Statements (SQL Injection Prevention)
-```
-Syntax: $sql = "INSERT INTO applicants (ssnum, lname) VALUES (:ssnum, :lname)";
-$stmt = $conn->prepare($sql);
-$stmt->bindParam(':ssnum', $ssnum);
-$stmt->bindParam(':lname', $lname);
-$stmt->execute();
-```
-
-**Explanation**:
-- Write SQL with placeholders: `:fieldname`
-- Prepare: `$stmt = $conn->prepare($sql);`
-- Bind values: `$stmt->bindParam(':fieldname', $variable);`
-- Execute: `$stmt->execute();`
-- NEVER put variables directly in SQL string
-
-**Example**:
-```php
-$query = "SELECT * FROM users WHERE id = :id AND status = :status";
-$statement = $pdo->prepare($query);
-$statement->bindParam(':id', $userId);
-$statement->bindParam(':status', $userStatus);
-$statement->execute();
-```
-
-===================================================================================================
-
-```
-Syntax: $applicantId = $conn->lastInsertId();
-```
-
-**Explanation**: Gets the ID of the last inserted record.
-- Insert record first
-- Immediately call `$conn->lastInsertId()`
-- Use this ID to insert related records (like addresses, parents, etc.)
-
-**Example**:
-```php
-$stmt = $pdo->prepare("INSERT INTO users (name) VALUES (?)");
-$stmt->execute(['John']);
-$newUserId = $pdo->lastInsertId();
-// $newUserId contains the ID of the newly inserted user
-```
-
-===================================================================================================
-
-### Array Handling
-```
-Syntax: if (isset($_POST['children']) && is_array($_POST['children'])) {
-    foreach ($_POST['children'] as $child) {
-        $lname = trim($child['lname'] ?? '');
-    }
-}
-```
-
-**Explanation**:
-- Check if exists: `isset($_POST['children'])`
-- Check if array: `is_array($_POST['children'])`
-- Loop: `foreach ($array as $item) { }`
-- Access nested: `$item['fieldname']`
-
-**Example**:
-```php
-if (isset($_POST['products']) && is_array($_POST['products'])) {
-    foreach ($_POST['products'] as $product) {
-        $name = $product['name'] ?? '';
-        $price = $product['price'] ?? 0;
-    }
-}
-```
-
-===================================================================================================
-
-### Validation
-```
-Syntax: // Check if empty
-if (!validateRequired($ssnum)) {
-    $errors[] = "SS Number is required";
-}
-
-// Email validation
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    $errors[] = "Invalid email format";
-}
-
-// Input filtering and validation
-$input = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
-if ($input === false) {
-    $errors[] = "Invalid email format";
-}
-
-// Regex validation
-if (!preg_match('/^[0-9+\-\s()]+$/', $phone)) {
-    $errors[] = "Invalid phone format";
-}
-```
-
-**Explanation**:
-- Empty check: `!empty(trim($value))` - Returns true if has content
-- Email: `filter_var($email, FILTER_VALIDATE_EMAIL)` - Returns false if invalid
-- Input filtering: `filter_input(INPUT_POST, 'field', FILTER_VALIDATE_EMAIL)` - Gets and validates input in one step
-- Regex: `preg_match('/pattern/', $value)` - Returns true if matches pattern
-- Store errors in array: `$errors[] = "message";`
-
-**Example**:
-```php
-if (empty(trim($_POST['username']))) {
-    $errors[] = "Username is required";
-}
-$email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
-if ($email === false) {
-    $errors[] = "Invalid email format";
-}
-```
-
-===================================================================================================
-
-### Error Handling
-**Syntax**: 
-```php
-try {
-    // Database operations
-} catch(PDOException $e) {
-    echo "Error: " . $e->getMessage();
-}
-```
-
-**Explanation**: 
-- Wrap risky code in `try { }`
-- Catch errors with `catch(ExceptionType $e) { }`
-- Show error: `$e->getMessage()`
-- Prevents script from crashing
-
-**Example**:
-```php
-try {
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
-    $stmt->execute([1]);
-    $result = $stmt->fetch();
-} catch(PDOException $e) {
-    echo "Database error: " . $e->getMessage();
-}
-```
-
-===================================================================================================
-
-### Exception Handling in PHP
-**Syntax**:
-```php
-try {
-    // Code that might throw an exception
-    $conn = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    // More database operations
-} catch(PDOException $e) {
-    // Handle PDO exceptions
-    echo "Database error: " . $e->getMessage();
-} catch(Exception $e) {
-    // Handle general exceptions
-    echo "General error: " . $e->getMessage();
-} finally {
-    // Optional: code that always runs
-    // Cleanup operations
-}
-```
-
-**Explanation**:
-- `try` block - Contains code that might throw an exception
-- `catch` block - Handles specific types of exceptions
-- `PDOException` - Specific exception type for database errors
-- `finally` block - Code that runs regardless of whether an exception occurred
-- `$e->getMessage()` - Gets the error message from the exception
-
-**Example**:
-```php
-try {
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
-    $stmt->execute([1]);
-    $result = $stmt->fetch();
-} catch(PDOException $e) {
-    error_log("Database query failed: " . $e->getMessage());
-    echo "Sorry, there was a database error.";
-} catch(Exception $e) {
-    error_log("General error: " . $e->getMessage());
-    echo "Sorry, something went wrong.";
-}
-```
-
-===================================================================================================
-
-### JSON Functions
-**Syntax**:
-```php
-// Convert PHP array/object to JSON string
-$jsonString = json_encode($array);
-
-// Convert JSON string to PHP array/object
-$array = json_decode($jsonString, true);  // true = return associative array
-```
-
-**Explanation**:
-- `json_encode()` - Converts PHP data to JSON string
-- `json_decode()` - Converts JSON string to PHP data
-- Second parameter `true` - Returns associative array instead of object
-- Used for API responses and AJAX communication
-
-**Example**:
-```php
-$data = ['success' => true, 'message' => 'OK', 'id' => 123];
-$jsonResponse = json_encode($data);
-// Returns: {"success":true,"message":"OK","id":123}
-
-$decoded = json_decode($jsonResponse, true);
-// Returns: ['success' => true, 'message' => 'OK', 'id' => 123]
-```
-
-===================================================================================================
-
-### Header Functions
-**Syntax**:
-```php
-// Set content type header
-header('Content-Type: application/json');
-
-// Redirect to another page
-header('Location: success.php');
-
-// Set cache control header
-header('Cache-Control: no-cache, must-revalidate');
-```
-
-**Explanation**:
-- `header()` - Sends raw HTTP header to browser
-- `'Content-Type: application/json'` - Tells browser response is JSON
-- `'Location: page.php'` - Redirects browser to different page
-- Headers must be sent before any output
-
-**Example**:
-```php
-// Send JSON response
-header('Content-Type: application/json');
-echo json_encode(['success' => true, 'message' => 'Created successfully']);
-
-// Redirect after successful form submission
-header('Location: thank-you.php');
-exit; // Always exit after redirect
-```
-
-===================================================================================================
-
-### String Functions
-**Syntax**:
-```php
-// Remove whitespace from start and end
-$trimmed = trim($string);
-
-// Convert to uppercase
-$upper = strtoupper($string);
-
-// Convert to lowercase
-$lower = strtolower($string);
-
-// Get string length
-$length = strlen($string);
-
-// Replace part of string
-$newString = str_replace('old', 'new', $originalString);
-```
-
-**Explanation**:
-- `trim()` - Removes whitespace from beginning and end
-- `strtoupper()` - Converts to uppercase
-- `strtolower()` - Converts to lowercase
-- `strlen()` - Gets number of characters in string
-- `str_replace()` - Replaces occurrences of substring
-
-**Example**:
-```php
-$text = "  Hello World  ";
-$clean = trim($text);           // "Hello World"
-$upper = strtoupper($clean);    // "HELLO WORLD"
-$length = strlen($upper);       // 11
-$modified = str_replace('WORLD', 'UNIVERSE', $upper);  // "HELLO UNIVERSE"
-```
-
-===================================================================================================
-
-### Regular Expressions
-**Syntax**:
-```php
-// Check if string matches pattern
-$matches = preg_match('/pattern/', $string);
-
-// Replace pattern with new text
-$newString = preg_replace('/pattern/', 'replacement', $originalString);
-
-// Split string by pattern
-$parts = preg_split('/pattern/', $string);
-```
-
-**Explanation**:
-- `preg_match()` - Returns 1 if pattern found, 0 if not
-- `preg_replace()` - Replaces pattern with replacement text
-- `preg_split()` - Splits string into array using pattern as delimiter
-- Patterns are enclosed in delimiters (usually /)
-
-**Example**:
-```php
-// Validate phone number format
-if (preg_match('/^\d{3}-\d{3}-\d{4}$/', '123-456-7890')) {
-    echo "Valid phone format";
-}
-
-// Replace all digits with X
-$masked = preg_replace('/\d/', 'X', '123-456-7890');  // XXX-XXX-XXXX
-
-// Split by comma
-$parts = preg_split('/,/', 'apple,banana,orange');  // ['apple', 'banana', 'orange']
-```
-
-===================================================================================================
-
-### Conditional Logic
-**Syntax**:
-```php
-// Basic if statement
-if ($condition) {
-    // Code when condition is true
-}
-
-// If-else statement
-if ($condition) {
-    // Code when true
-} else {
-    // Code when false
-}
-
-// If-elseif-else statement
-if ($condition1) {
-    // Code for condition1
-} elseif ($condition2) {
-    // Code for condition2
-} else {
-    // Code for none of the above
-}
-```
-
-**Explanation**:
-- `if` - Executes code when condition is true
-- `else` - Executes when if condition is false
-- `elseif` - Additional condition to check
-- Conditions can use operators: ==, ===, !=, !==, <, >, <=, >=
-
-**Example**:
-```php
-$age = 25;
-if ($age >= 18) {
-    $status = "adult";
-} elseif ($age >= 13) {
-    $status = "teenager";
-} else {
-    $status = "child";
-}
-```
-
-===================================================================================================
-
-### Loop Structures
-**Syntax**:
-```php
-// For loop
-for ($i = 0; $i < 10; $i++) {
-    // Code executed 10 times
-}
-
-// While loop
-while ($condition) {
-    // Code executed while condition is true
-}
-
-// Foreach loop (for arrays)
-foreach ($array as $key => $value) {
-    // Code executed for each array element
-}
-
-// Foreach without key
-foreach ($array as $value) {
-    // Code executed for each array element
-}
-```
-
-**Explanation**:
-- `for` - Loop with counter variable
-- `while` - Loop while condition is true
-- `foreach` - Loop through array elements
-- `$key => $value` - Gets both key and value from array
-- `$value` - Gets only value from array
-
-**Example**:
-```php
-// Print numbers 0-9
-for ($i = 0; $i < 10; $i++) {
-    echo $i . "\n";
-}
-
-// Process array items
-$names = ['John', 'Jane', 'Bob'];
-foreach ($names as $name) {
-    echo "Hello " . $name . "\n";
-}
-
-// Process associative array
-$user = ['name' => 'John', 'age' => 30];
-foreach ($user as $field => $value) {
-    echo $field . ": " . $value . "\n";
-}
-```
-
-===================================================================================================
-
-### JavaScript Alert from PHP
-**Syntax**:
-```php
-echo "<script>alert('Success!'); window.location.href='page1.html';</script>";
-```
-
-**Explanation**:
-- Use `echo` to output JavaScript code
-- `alert('message')` - Shows popup
-- `window.location.href='file.html'` - Redirects to page
-- `window.history.back()` - Goes back to previous page
-
-**Example**:
-```php
-echo "<script>alert('Record saved successfully!');</script>";
-echo "<script>window.location.href='dashboard.php';</script>";
-```
-
-===================================================================================================
-
-### String Functions
-**Syntax**: 
-```php
-trim($value)              // Remove whitespace
-implode("\\n", $errors)   // Join array with newline
-```
-
-**Explanation**: 
-- `trim($str)` - Removes spaces from start/end
-- `implode("separator", $array)` - Joins array into string
-- Example: `implode(", ", ['a','b','c'])` returns "a, b, c"
-
-**Example**:
-```php
-$text = "  hello world  ";
-$clean = trim($text);  // $clean = "hello world"
-$list = implode(", ", ['apple', 'banana', 'orange']);  
-// $list = "apple, banana, orange"
-```
-
-===================================================================================================
-
-### Date Formatting
-**Syntax**: 
-```php
-$formattedDate = date('Y-m-d', strtotime($dateString));
-```
-
-**Explanation**: Converts date string to MySQL DATE format (YYYY-MM-DD).
-- `strtotime()` - Parses date string to timestamp
-- `date('Y-m-d', timestamp)` - Formats timestamp to MySQL date format
-- Essential when working with DATE type columns in database
-
-**Example**:
-```php
-$userDate = "01/15/2023";
-$mysqlDate = date('Y-m-d', strtotime($userDate));
-// $mysqlDate = "2023-01-15"
-```
-
-===================================================================================================
-
-### Transactions
-**Syntax**: 
-```php
-$conn->beginTransaction();
-// Multiple queries here
-$conn->commit();  // Save all changes
-// OR
-$conn->rollBack(); // Undo all changes if error occurs
-```
-
-**Explanation**: Ensures all database operations succeed or fail together.
-- Start transaction: `$conn->beginTransaction()`
-- Execute multiple queries
-- If all succeed: `$conn->commit()`
-- If any fail: `$conn->rollBack()`
-
-**Example**:
-```php
-try {
-    $pdo->beginTransaction();
-    $pdo->prepare("INSERT INTO orders ...")->execute([...]);
-    $pdo->prepare("UPDATE inventory ...")->execute([...]);
-    $pdo->commit();  // All changes saved
-} catch(Exception $e) {
-    $pdo->rollBack();  // All changes undone
-    echo "Transaction failed";
-}
-```
-
-===================================================================================================
-
-## Project Flow
-
-1. **User opens**: `http://localhost/ws310-act1/page1.html`
-2. **User fills form** and clicks submit
-3. **Browser sends** POST request to `page1.php`
-4. **PHP validates** required fields and data types
-5. **If errors**: JavaScript alert shows errors, user stays on page
-6. **If valid**:
-   - Insert into `applicants` table
-   - Get applicant ID
-   - Insert address into `applicant_addresses` table
-   - Insert parents into `applicant_parents` table
-   - Insert spouse into `applicant_spouse` table (if provided)
-   - Insert children into `applicant_children` table
-   - Insert employment into `applicant_employment` table
-   - Insert certification into `applicant_certification` table
-   - Show success alert
-   - Redirect to page1.html
-
-===================================================================================================
-
-## Key Concepts
-
-### Client-Side Validation (HTML5)
-- `type="email"` - Browser checks email format
-- `type="date"` - Browser provides date picker
-- `type="number"` - Browser only allows numbers
-
-### Server-Side Validation (PHP)
-- Always validate on server (users can bypass client-side)
-- Check required fields
-- Validate formats (email, phone)
-- Trim whitespace
-
-### Security
-- **PDO Prepared Statements**: Prevents SQL injection
-- **trim()**: Removes extra whitespace
-- **filter_var()**: Validates email format
-- **Transaction handling**: Ensures data consistency
-
-### Database Design
-- **Normalized structure**: Separate tables for different entities
-- **Foreign Keys**: Links related records
-- **Proper data types**: DATE, DECIMAL, ENUM for better validation
-
-===================================================================================================
-
-## UniversalCRUD Class Syntax
-
-### UniversalCRUD Class Initialization
-**Syntax**:
-```php
-$crud = new UniversalCRUD('table_name');
-```
-
-**Explanation**:
-- `new UniversalCRUD()` - Creates a new instance of the Universal CRUD class
-- `'table_name'` - Specifies which database table to operate on
-- `$crud` - Variable to hold the CRUD instance for operations
-- Sets up database connection and table reference
-
-**Example**:
-```php
-$applicantCrud = new UniversalCRUD('applicants');
-$addressCrud = new UniversalCRUD('applicant_addresses');
-```
-
-===================================================================================================
-
-### Create Operation (C)
-**Syntax**:
-```php
-$id = $crud->create($data);
-```
-
-**Explanation**:
-- `$crud->create()` - Method to insert a new record
-- `$data` - Associative array of column => value pairs to insert
-- Returns the ID of the newly created record
-- Handles prepared statements and error handling internally
-
-**Example**:
-```php
-$crud = new UniversalCRUD('applicants');
-$data = [
-    'ssnum' => '123-456-789',
-    'lname' => 'DOE',
-    'fname' => 'JOHN'
-];
-$newId = $crud->create($data);
-// Returns the ID of the newly inserted applicant
-```
-
-===================================================================================================
-
-### Read Operation (R)
-**Syntax**:
-```php
-$records = $crud->read($conditions, $orderBy, $orderDirection, $limit, $offset);
-```
-
-**Explanation**:
-- `$crud->read()` - Method to retrieve records from the table
-- `$conditions` - Associative array of column => value pairs for WHERE clause (optional)
-- `$orderBy` - Column name to order results by (optional)
-- `$orderDirection` - Direction to order ('ASC' or 'DESC', optional)
-- `$limit` - Maximum number of records to return (optional)
-- `$offset` - Number of records to skip (for pagination, optional)
-- Returns array of matching records
-
-**Example**:
-```php
-$crud = new UniversalCRUD('applicants');
-// Get all records ordered by last name
-$allApplicants = $crud->read([], 'lname', 'ASC');
-// Get only applicants with specific last name
-$doeApplicants = $crud->read(['lname' => 'DOE'], 'fname', 'ASC');
-// Get first 10 records
-$limitedApplicants = $crud->read([], 'lname', 'ASC', 10, 0);
-```
-
-===================================================================================================
-
-### Read Single Record
-**Syntax**:
-```php
-$record = $crud->readOne($id, $idColumn);
-```
-
-**Explanation**:
-- `$crud->readOne()` - Method to retrieve a single record by ID
-- `$id` - The ID value to search for
-- `$idColumn` - Name of the ID column (defaults to 'id')
-- Returns single record as associative array or null if not found
-
-**Example**:
-```php
-$crud = new UniversalCRUD('applicants');
-$applicant = $crud->readOne(123, 'applicant_id');
-if ($applicant) {
-    echo "Found: " . $applicant['fname'] . " " . $applicant['lname'];
-}
-```
-
-===================================================================================================
-
-### Update Operation (U)
-**Syntax**:
-```php
-$success = $crud->update($data, $conditions);
-```
-
-**Explanation**:
-- `$crud->update()` - Method to modify existing records
-- `$data` - Associative array of column => new_value pairs to update
-- `$conditions` - Associative array of column => value pairs for WHERE clause
-- Returns true on success, false on failure
-- Updates only records that match the conditions
-
-**Example**:
-```php
-$crud = new UniversalCRUD('applicants');
-$updateData = [
-    'fname' => 'JANE',
-    'email' => 'jane.doe@example.com'
-];
-$conditions = ['applicant_id' => 123];
-$success = $crud->update($updateData, $conditions);
-// Updates the applicant with ID 123
-```
-
-===================================================================================================
-
-### Delete Operation (D)
-**Syntax**:
-```php
-$success = $crud->delete($conditions);
-```
-
-**Explanation**:
-- `$crud->delete()` - Method to remove records from the table
-- `$conditions` - Associative array of column => value pairs for WHERE clause
-- Returns true on success, false on failure
-- Deletes all records that match the conditions
-
-**Example**:
-```php
-$crud = new UniversalCRUD('applicants');
-$conditions = ['applicant_id' => 123];
-$success = $crud->delete($conditions);
-// Deletes the applicant with ID 123
-
-// Delete multiple records matching conditions
-$success = $crud->delete(['lname' => 'SMITH']);
-// Deletes all applicants with last name 'SMITH'
-```
-
-===================================================================================================
-
-### Search Operation
-**Syntax**:
-```php
-$results = $crud->search($searchFields, $matchType);
-```
-
-**Explanation**:
-- `$crud->search()` - Method to find records using LIKE operator
-- `$searchFields` - Associative array of column => search_value pairs
-- `$matchType` - Type of match ('any' for OR, 'all' for AND)
-- Returns array of matching records
-- Uses %wildcards% for partial matching
-
-**Example**:
-```php
-$crud = new UniversalCRUD('applicants');
-// Find applicants with 'DOE' in last name (OR match)
-$results = $crud->search(['lname' => 'DOE'], 'any');
-// Find applicants with 'JOHN' in first name AND 'DOE' in last name
-$results = $crud->search(['fname' => 'JOHN', 'lname' => 'DOE'], 'all');
-```
-
-===================================================================================================
-
-### Count Records
-**Syntax**:
-```php
-$count = $crud->count($conditions);
-```
-
-**Explanation**:
-- `$crud->count()` - Method to count records matching conditions
-- `$conditions` - Associative array of column => value pairs for WHERE clause (optional)
-- Returns integer count of matching records
-- Useful for pagination and statistics
-
-**Example**:
-```php
-$crud = new UniversalCRUD('applicants');
-// Count all applicants
-$total = $crud->count();
-// Count applicants with specific last name
-$doeCount = $crud->count(['lname' => 'DOE']);
-// Count married applicants
-$marriedCount = $crud->count(['cvstatus' => 'Married']);
-```
-
-===================================================================================================
-
-### UniversalCRUD Benefits
-**Advantages**:
-- **Simplified Syntax**: Single methods for all CRUD operations
-- **Security**: Built-in prepared statements prevent SQL injection
-- **Consistency**: Same interface for all database tables
-- **Error Handling**: Automatic error handling and logging
-- **Flexibility**: Support for conditions, ordering, limits, and pagination
-- **Maintainability**: Centralized database operations in one class
-
-**Comparison**:
-```php
-// Traditional approach (complex)
-$conn = new PDO($dsn, $user, $pass);
-$stmt = $conn->prepare("INSERT INTO applicants (ssnum, lname, fname) VALUES (?, ?, ?)");
-$stmt->execute([$ssnum, $lname, $fname]);
-$newId = $conn->lastInsertId();
-
-// UniversalCRUD approach (simple)
-$crud = new UniversalCRUD('applicants');
-$newId = $crud->create(['ssnum' => $ssnum, 'lname' => $lname, 'fname' => $fname]);
-```
-
-===================================================================================================

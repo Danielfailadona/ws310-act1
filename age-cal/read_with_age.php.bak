@@ -1,20 +1,6 @@
 <?php
-// Database connection function
-function getConnection() {
-    $host = 'localhost';
-    $dbname = 'ws310_db';
-    $username = 'root';
-    $password = '';
-
-    try {
-        $conn = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        return $conn;
-    } catch(PDOException $e) {
-        error_log("Connection failed: " . $e->getMessage());
-        return null;
-    }
-}
+// Include the Universal CRUD class
+require_once '../universal-crud/UniversalCRUD.php';
 
 //==============================
 
@@ -38,17 +24,11 @@ function calculateAge($dob) {
 // DATA RETRIEVAL FUNCTION
 function retrieveApplicantsWithAges() {
     try {
-        $conn = getConnection();
-        if (!$conn) {
-            throw new Exception("Database connection failed");
-        }
+        // Create CRUD instance for applicants table
+        $crud = new UniversalCRUD('applicants');
 
         // Get all applicants with their names and birth dates
-        $query = "SELECT applicant_id, fname, lname, dbirth FROM applicants ORDER BY lname ASC";
-
-        $stmt = $conn->prepare($query);
-        $stmt->execute();
-        $applicants = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $applicants = $crud->read([], 'lname', 'ASC'); // Read all records ordered by last name
 
         // Add calculated age to each applicant
         foreach ($applicants as &$applicant) {
